@@ -1,0 +1,12 @@
+.pool-edit-box{
+    column-count: 3;
+    column-gap: 10px;
+
+    counter-reset: count;
+    width: 1800px;
+    margin: 0 auto;
+}
+.pool-edit-box>div{
+    position: relative;
+    margin-bottom: 10px;
+}

@@ -1,0 +1,132 @@
+.banner{
+    --banner-width: 600px;
+    --banner-height: 182px;
+    width: var(--banner-width);
+    height: var(--banner-height);
+    overflow: hidden;
+}
+.banner a,a:link,a:visited,a:hover,a:active{
+    text-decoration: none;
+    color:inherit;
+}
+.card-bg {
+    --background-url: '';
+    display: flow-root;
+    width: var(--banner-width);
+    height: var(--banner-height);
+    background-image: var(--background-url);
+    background-size: cover;
+    filter: brightness(60%);
+}
+
+.banner-basic {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    z-index: 50;
+    width: 255px;
+    height: 34px;
+    user-select: none;
+    background-color: rgba(6, 6, 6, 0.6);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.banner-basic > div {
+    width: 49px;
+    height: 24px;
+    margin: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.banner-basic > div > img {
+    display: block;
+    width: 24px;
+    height: 24px;
+    margin-right: 3px;
+}
+
+.banner-basic > div > samp {
+    color: #fd5;
+}
+
+.banner-stats {
+    position: absolute;
+    top: 52px;
+    right: 20px;
+    width: 255px;
+    height: 130px;
+    background-color: rgba(6, 6, 6, 0.6);
+}
+
+.banner-stats > table {
+    text-align: center;
+    color: #FFFFFFB2;
+}
+.bar-star{
+    border-left-color: #ffdd55 !important;
+}
+.bar{
+    --fill:0;
+    width: 152px;
+    height: 5px;
+    box-sizing: border-box;
+    border-color: white;
+    border-style: solid;
+    border-width: 0;
+    border-left-width: calc(var(--fill) * 152px);
+}
+
+.banner-title{
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    color: white;
+}
+
+.banner-bid{
+    position: absolute;
+    top: 80px;
+    left: 20px;
+    color: white;
+}
+.banner-lite-bid{
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    color: white;
+}
+
+.banner-title  *, .banner-bid  *, .banner-lite-bid  *{
+    margin: 0;
+    max-width: 290px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.banner-artist{
+    position: absolute;
+    top: 45px;
+    left: 20px;
+    color: #FFFFFFB9;
+}
+
+.banner-artist *{
+    margin: 0;
+    max-width: 290px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.banner-lite{
+    --banner-width: 600px;
+    --banner-height: 91px;
+    width: var(--banner-width);
+    height: var(--banner-height);
+    overflow: hidden;
+}
