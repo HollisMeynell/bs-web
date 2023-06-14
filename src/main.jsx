@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './style/index.css'
-import {ConfigProvider, message, theme} from "antd";
+import {App, ConfigProvider, message, theme} from "antd";
 import {Router as indexRouter} from './page/index.jsx'
 import {Router as devRouter} from './page/developer.jsx'
 import {Router as homeRouter} from './page/home.jsx'
@@ -14,8 +14,6 @@ const router = createBrowserRouter([indexRouter, homeRouter, devRouter, bindRout
 
 
 function Main() {
-    const [messageApi, contextHolder] = message.useMessage();
-    window.log = messageApi;
     const themeConf = {
         ...useSelector((state) => state.theme.value)
     };
@@ -23,15 +21,16 @@ function Main() {
         themeConf.algorithm = theme.darkAlgorithm;
     }
     return <ConfigProvider theme={themeConf}>
-        {contextHolder}
         <RouterProvider router={router}/>
     </ConfigProvider>
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
-        <Provider store={store}>
-            <Main/>
-        </Provider>
+        <App style={{height:'100%'}}>
+            <Provider store={store}>
+                <Main/>
+            </Provider>
+        </App>
     </React.StrictMode>
 )
