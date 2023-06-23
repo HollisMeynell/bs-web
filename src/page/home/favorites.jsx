@@ -261,11 +261,11 @@ function FilterCard({onChange}) {
         {
             show.map((v, i) => {
                 return <>
-                    <h4 key={i}>{`${v.key}: ${data[v.key][0]}-${data[v.key][1]}`}</h4>
+                    <h4 key={`h-${i}`}>{`${v.key}: ${data[v.key][0]}-${data[v.key][1]}`}</h4>
                     <Slider min={defaultValue[v.key][0]} max={defaultValue[v.key][1]} step={0.1} range
                             value={data[v.key]}
                             onChange={change(v.key)}
-                            key={v.key}
+                            key={`s-${i}`}
                     />
                 </>
             })

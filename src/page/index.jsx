@@ -33,8 +33,8 @@ function Index() {
             <Layout.Content style={{backgroundColor: token.colorPrimaryBg}}>
                 <Row style={{marginTop: '3rem'}} justify="space-evenly">
                     <LoginCard text={"点击进入"} index={1} title={"我是游客"} enter={guestEnter}/>
-                    <LoginCard text={"点击进入"} index={2} title={"我是开发者"} enter={developerEnter}/>
                     <LoginCard text={"点击进入"} index={3} title={"我是使用者"} enter={userEnter}/>
+                    <LoginCard text={"点击进入"} index={2} title={"我是开发者"} enter={developerEnter}/>
                 </Row>
                 <Setter/>
             </Layout.Content>

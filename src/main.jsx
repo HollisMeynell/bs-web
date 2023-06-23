@@ -6,11 +6,12 @@ import {Router as indexRouter} from './page/index.jsx'
 import {Router as devRouter} from './page/developer.jsx'
 import {Router as homeRouter} from './page/home.jsx'
 import {Router as bindRouter} from './page/bind.jsx'
+import {Router as userInfoRouter} from './page/userInfo.jsx'
 import store from "./components/store.js";
 import {RouterProvider, createBrowserRouter} from "react-router-dom";
 import {Provider, useSelector} from "react-redux";
 
-const router = createBrowserRouter([indexRouter, homeRouter, devRouter, bindRouter])
+const router = createBrowserRouter([indexRouter, homeRouter, devRouter, bindRouter, userInfoRouter])
 
 
 function Main() {
@@ -26,11 +27,11 @@ function Main() {
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-    <React.StrictMode>
+    // <React.StrictMode>
         <App style={{height:'100%'}}>
             <Provider store={store}>
                 <Main/>
             </Provider>
         </App>
-    </React.StrictMode>
+    // </React.StrictMode>
 )

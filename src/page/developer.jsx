@@ -5,6 +5,12 @@ import swatch from "react-color/lib/components/common/Swatch.js";
 import {useNavigate} from "react-router";
 import {HttpRequest} from "../api/util.js";
 
+export const Router = {
+    path: '/dev',
+    element: <Developer/>,
+    errorElement: <ErrorPage/>,
+}
+
 function Developer() {
     const navigate = useNavigate();
     const text = useRef(null);
@@ -34,12 +40,22 @@ function Developer() {
             if (e === "exit" || e === "quit"){
                 navigate('/');
             }
+            switch(e) {
+                case "exit":
+                case "quit": {
+                    navigate('/');
+                    break;
+                }
+                case "oauth": {
+                    HttpRequest.get("/api/public/getOauthUrl").then((rep) => {
+                        sysMsg(rep.data.code);
+                    });
+                    break;
+                }
+            }
             userMsg(e);
         }
         setInput('');
-        HttpRequest.get("/api/public/getOauthUrl").then((rep) => {
-            sysMsg(rep.data.code);
-        })
     }
 
     useEffect(() => {
@@ -65,10 +81,4 @@ function Developer() {
             </div>
         </Layout.Content>
     </Layout>
-}
-
-export const Router = {
-    path: '/dev',
-    element: <Developer/>,
-    errorElement: <ErrorPage/>,
 }

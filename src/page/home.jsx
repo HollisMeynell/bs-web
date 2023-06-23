@@ -1,6 +1,6 @@
 import {Outlet, useOutlet, useNavigate, useParams, useLocation} from "react-router";
 import ErrorPage from "../Err/error.jsx";
-import {Avatar, Breadcrumb, Button, Card, Divider, FloatButton, Layout, Menu, Popover, Spin, theme} from "antd";
+import {Avatar, Breadcrumb, Button, Card, Divider, FloatButton, Image, Layout, Menu, Popover, Spin, theme} from "antd";
 import {Router as childRouter} from './child.jsx'
 import {Router as Favorites} from './home/favorites.jsx'
 import {Link} from "react-router-dom";
@@ -16,15 +16,24 @@ import {
     UserOutlined
 } from "@ant-design/icons";
 import Edit from "./home/poolEdit.jsx";
+import {getFlagUrlFromCountryCode, getUser} from "../api/util.js";
+import {getUserCard} from "../api/userinfo.js";
+import {getMarkPool} from "../api/mapinfo.js";
+
+export const Router = {
+    path: '/home',
+    element: <Home/>,
+    errorElement: <ErrorPage/>,
+    children: [childRouter, Favorites, {path: 'mappool/:mid', element: <div children={"3"}/>}]
+}
 
 export default function Home() {
     const {route, mid} = useParams();
     const {token} = theme.useToken();
     const navigate = useNavigate();
     const outlet = useOutlet();
-    const [menuItems, setMenuItems] = useState([]);
-    const uid = 17064371;
-    const uname = '-Spring Night-';
+    const [markPool, setMarkPool] = useState([]);
+    const [userData, setUserData] = useState(getUser());
     const location = useLocation();
     const pathSnippets = location.pathname.split('/').filter((i) => i);
     const extraBreadcrumbItems = pathSnippets.map((path, index) => {
@@ -35,31 +44,45 @@ export default function Home() {
         };
     });
 
-    useEffect(() => {
-        const mapgroup = [
-            /*
-            getItem(<Link to={'mappool/f23'} children={"NM1"}/>, '/home/mappool/f23', null),
-            getItem(<Link to={'mappool/f24'} children={"NM2"}/>, '/home/mappool/f24', null),
+    const routeList = [
+        generateMenuItem(<Link to={''} children={"管理"}/>, "/home", <UngroupOutlined/>),
+        generateMenuItem(<Link to={'favorites'} children={"收藏"}/>, "/home/favorites", <AppstoreOutlined/>),
+        generateMenuItem("图池", "/home/mappool", <FolderOpenOutlined/>, markPool),
+    ];
 
-             */
-        ]
-        if (mapgroup.length === 0) {
-            mapgroup.push({
-                label: "请在管理页面添加",
-                disabled: true,
+    function updateMenu() {
+        getMarkPool().then(rep => {
+            const markList = rep.data.map(i => generateMenuItem(
+                <Link to={`mappool/${i.id}`} children={i.name}/>,
+                `/home/mappool/${i.id}`)
+            );
+            if (markList.length === 0) {
+                markList.push({
+                    label: "请在管理页面添加",
+                    disabled: true,
+                })
+            }
+            setMarkPool(markList);
+        });
+    }
+
+    useEffect(() => {
+        setMarkPool([{label: "请在管理页面添加", disabled: true,}]);
+
+        getUserCard(userData.uid).then((data) => {
+            setUserData({
+                ...userData,
+                cover: data.cover.custom_url,
+                avatar: data.avatar_url,
+                country: data.country_code,
             })
-        }
-        const routeList = [
-            getItem(<Link to={''} children={"管理"}/>, "/home", <UngroupOutlined />),
-            getItem(<Link to={'favorites'} children={"收藏"}/>, "/home/favorites", <AppstoreOutlined/>),
-            getItem("图池", "/home/mappool", <FolderOpenOutlined />, mapgroup),
-        ]
-        setMenuItems(routeList);
+        });
     }, []);
 
     function handleReload() {
 
     }
+
     function handleExit() {
         navigate('/');
     }
@@ -69,7 +92,12 @@ export default function Home() {
         <Layout.Sider theme={'light'} trigger={null}>
             <Menu
                 mode="inline"
-                items={menuItems}
+                items={routeList}
+                onOpenChange={(title)=>{
+                    if (title.includes('/home/mappool')) {
+                        updateMenu();
+                    }
+                }}
                 selectedKeys={location.pathname}
             />
         </Layout.Sider>
@@ -83,28 +111,10 @@ export default function Home() {
                 alignItems: 'center'
             }}>
                 {/*顶框*/}
-                <Breadcrumb separator=">" items={extraBreadcrumbItems} style={{marginRight:'auto'}}/>
-                <Popover
-                    arrow={false}
-                    placement="bottomRight"
-                    content={<Card
-                        style={{width:350}}
-                        cover={<img alt={'cover'} src={"https://assets.ppy.sh/user-profile-covers/10246790/7a022e0b18091c0e9c1b6bb7948f7c49e64b432b41aec5652d260188dbd17e68.jpeg"}/>}
-                        children={<Card.Meta
-                            avatar={<Avatar src={`https://a.ppy.sh/${uid}`}/>}
-                            title={uname}
-                            description={"不知道写啥,先空着"}
-                        />}
-                        actions={[
-                            <ReloadOutlined key={'reload'} onClick={handleReload}/>,
-                            <ExportOutlined key={'exit'} onClick={handleExit}/>
-                        ]}
-                    />}
-                >
-                    <samp style={{cursor: 'pointer', userSelect: 'none'}}>{uname}</samp>
-                </Popover>
-                <Divider type="vertical"/>
-                <Avatar src={`https://a.ppy.sh/${uid}`} size={"large"} icon={<UserOutlined/>}/>
+                <Header breadcrumbItems={extraBreadcrumbItems}
+                        userData={userData}
+                        handleExit={handleExit}
+                        handleReload={handleReload}/>
             </Layout.Header>
             <Layout.Content style={{height: '100%'}}>
                 {/*主体容器*/}
@@ -115,7 +125,7 @@ export default function Home() {
     </Layout>
 }
 
-function getItem(label, key, icon, children) {
+function generateMenuItem(label, key, icon, children) {
     return {
         key,
         icon,
@@ -124,9 +134,39 @@ function getItem(label, key, icon, children) {
     }
 }
 
-export const Router = {
-    path: '/home',
-    element: <Home/>,
-    errorElement: <ErrorPage/>,
-    children: [childRouter, Favorites, {path: 'mappool/:mid', element: <div children={"3"}/>}]
+/***
+ * 顶框
+ * @param breadcrumbItems
+ * @param userData
+ * @returns {JSX.Element}
+ * @constructor
+ */
+function Header({breadcrumbItems, userData, handleReload, handleExit}) {
+    return <><Breadcrumb separator=">" items={breadcrumbItems} style={{marginRight: 'auto'}}/>
+        <Popover
+            arrow={false}
+            placement="bottomRight"
+            content={<Card
+                style={{width: 350}}
+                cover={<img alt={'cover'} src={userData.cover}/>}
+                children={<Card.Meta
+                    avatar={<Avatar src={userData.avatar}/>}
+                    title={userData.name}
+                    description={<>
+                        {userData.country && <img style={{width: "1.3888888rem", height: "1rem"}} alt={"country"}
+                                                  src={getFlagUrlFromCountryCode(userData.country)}/>}
+                        不知道写啥,先空着
+                    </>}
+                />}
+                actions={[
+                    <ReloadOutlined key={'reload'} onClick={handleReload}/>,
+                    <ExportOutlined key={'exit'} onClick={handleExit}/>
+                ]}
+            />}
+        >
+            <samp style={{cursor: 'pointer', userSelect: 'none'}}>{userData?.name}</samp>
+        </Popover>
+        <Divider type="vertical"/>
+        <Avatar src={userData.avatar} size={"large"} icon={<UserOutlined/>}/>
+    </>
 }

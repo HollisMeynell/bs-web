@@ -18,14 +18,24 @@ export function removeUserToken() {
     window.localStorage.removeItem("USER_INFO");
 }
 
-export function getUser(){
+export function getUser() {
     const uStr = window.localStorage.getItem("USER_INFO");
-    return uStr && JSON.stringify(uStr);
+    if (!uStr) {
+        return {
+            uid: 0,
+            name: "unknown"
+        }
+    }
+    const u = JSON.parse(uStr);
+    return {
+        ...u,
+        avatar: `https://a.ppy.sh/${u.uid}`
+    };
 }
 
 export const HttpRequest = axios.create({
     baseURL: 'http://localhost:8080',
-    timeout: 15,
+    timeout: 3000,
 });
 HttpRequest.interceptors.request.use((config) => {
     let token = window.localStorage.getItem("USER_TOKEN")
@@ -54,3 +64,23 @@ HttpRequest.interceptors.response.use((rep) => {
     }
     return Promise.reject(error);
 })
+const config = {
+    method: "GET" | "POST",
+    url: "",
+    headers: {},
+    body: {},
+    parameter: {}
+}
+HttpRequest.doProxy = function (config = config) {
+    return this.post("/api/public/proxy", config);
+};
+
+export function getFlagUrlFromCountryCode(code) {
+    if (code.length < 2) throw Error("code length err");
+    code = code.toUpperCase();
+    const startNum = 0x1f1e6;
+    const Acode = 65;
+    const i1 = code.charCodeAt(0) - Acode + startNum;
+    const i2 = code.charCodeAt(1) - Acode + startNum;
+    return `https://osu.ppy.sh/assets/images/flags/${i1.toString(16)}-${i2.toString(16)}.svg`;
+}

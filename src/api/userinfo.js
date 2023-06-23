@@ -14,3 +14,24 @@ export async function doLogin(code){
     }
     setUser(response.data);
 }
+
+export async function getUserCard(uid) {
+    return await HttpRequest.doProxy({
+        method: "GET",
+        url: `https://osu.ppy.sh/users/${uid}/card`,
+    })
+}
+
+export async function getUserInfo(uid) {
+    let bpList = await HttpRequest.doProxy({
+        url: `https://osu.ppy.sh/users/${params.uid}/scores/best`,
+        method: "GET",
+        parameter: {
+            mode: "osu",
+            limit: 100,
+            offset: 0
+        }
+    });
+    //https://osu.ppy.sh/users/18443135/recent_activity?limit=51&offset=0 近期活动
+    //https://osu.ppy.sh/users/17064371/scores/recent?mode=osu&limit=51&offset=0 24h打图
+}
