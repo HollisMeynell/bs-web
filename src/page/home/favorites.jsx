@@ -150,8 +150,9 @@ function MapCard({bid, r}) {
     const [editMarkdown, setEditMarkdown] = useState(false);
     const [banner, setBanner] = useState(false);
     const rowGutter = {xs: 8, sm: 16, md: 0};
+
     function setMarkdown() {
-        setEditMarkdown((r)=>(!r));
+        setEditMarkdown((r) => (!r));
 
     }
 
@@ -187,7 +188,7 @@ function MapCard({bid, r}) {
         }
         actions={[<FavoriteBox defaultValue={true} onChange={(e) => setIsFavorite(e)}/>,
             <SettingOutlined key="setting"/>,
-            editMarkdown?
+            editMarkdown ?
                 <SaveOutlined key="save" onClick={setMarkdown}/>
                 :
                 <EditOutlined key="edit" onClick={setMarkdown}/>,
