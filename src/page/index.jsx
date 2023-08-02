@@ -77,7 +77,7 @@ function LoginCard({title, text, enter, index}) {
             bordered={false}
             hoverable
             style={{backgroundColor: token.colorFillQuaternary}}
-            cover={<img src={cover} alt={"cover"}/>}
+            // cover={<img src={cover} alt={"cover"}/>}
         >
             <Card.Meta title={title} description={button}/>
 

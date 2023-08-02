@@ -2,6 +2,7 @@ import {useEffect} from "react";
 import {Card, Col, Row} from "antd";
 import PoolCard from "./poolCard.jsx";
 import './poolEdit.css'
+import FileUpload from "../../components/file-upload.jsx";
 
 const v = `
 ![img](http://disk.365246692.xyz/d/Download/pdir/%E5%A3%81%E7%BA%B8.jpeg?sign=tlSiy1UNuaoxoYKkqllC7KdvQjUbRZEbV0xiUx-g4Sw=:1684934142)
@@ -31,6 +32,6 @@ export default function ({setLoading}) {
         }
     }, []);
     return <>
-        
+        <FileUpload/>
     </>
 }
