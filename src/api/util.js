@@ -84,3 +84,21 @@ export function getFlagUrlFromCountryCode(code) {
     const i2 = code.charCodeAt(1) - Acode + startNum;
     return `https://osu.ppy.sh/assets/images/flags/${i1.toString(16)}-${i2.toString(16)}.svg`;
 }
+
+export async function uploadImage(file, name) {
+    const res = await HttpRequest.post("/api/file/stream/" + name, file, {headers: {"Content-Type": "application/octet-stream"}});
+    if (res.code === 200) {
+        return {
+            fileKey: res.data
+        }
+    }
+    else throw new Error(res.message)
+}
+
+export async function uploadAllImage(files) {
+    const res =  await HttpRequest.post("/api/file/upload", files);
+    if (res.code === 200) {
+        return res.data
+    }
+    else throw new Error(res.message)
+}

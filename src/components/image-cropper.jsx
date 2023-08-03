@@ -1,15 +1,17 @@
 import {useRef, useState} from "react";
-import {Button, Modal, Upload} from "antd";
+import {Button, Divider, Modal, Upload} from "antd";
 import Cropper from "react-cropper";
 import {UploadOutlined} from "@ant-design/icons";
 import "cropperjs/dist/cropper.css";
 
 
-export default function () {
+export default function ({
+                             setCutImage = (imgBlob) => {
+                             },
+                         }) {
 
     const [image, setImage] = useState("");
 
-    const [cropData, setCropData] = useState("#");
     const [modalOpen, setModalOpen] = useState(false);
 
     const cropRef = useRef();
@@ -20,16 +22,29 @@ export default function () {
 
     const onUpload = (file) => {
         const reader = new FileReader();
-        console.log(file);
         reader.onload = () => {
             setImage(reader.result);
         }
         setModalOpen(true);
         reader.readAsDataURL(file);
     }
-    const getCropData = () => {
+    const getCropData = async () => {
         if (typeof cropRef.current?.cropper !== "undefined") {
-            setCropData(cropRef.current?.cropper.getCroppedCanvas().toDataURL());
+            let blob = await new Promise((resolve) => {
+                cropRef.current?.cropper.getCroppedCanvas().toBlob((blob) => {
+                    resolve(blob);
+                });
+            })
+            if (blob.size > 800 * 1024) {
+                blob = await new Promise((resolve) => {
+                    cropRef.current?.cropper.getCroppedCanvas().toBlob((blob) => {
+                        resolve(blob);
+                    }, "image/jpeg", 95);
+                })
+                setCutImage(blob);
+            } else {
+                setCutImage(blob);
+            }
         }
     };
 
@@ -40,16 +55,14 @@ export default function () {
             </Button>
         </Upload>
 
-        <Modal open={modalOpen} onOk={closeModal} onCancel={closeModal}>
-            <div>
-                <div style={{width: "100%"}}>
-                    <button>Use default img</button>
-                    <br/>
-                    <br/>
+        <Modal open={modalOpen} onOk={getCropData} onCancel={closeModal} width={650}>
+            <div style={{width: 600, height: 400}}>
+                <Divider orientation={"left"}>建议尺寸 </Divider>
+                <div style={{width: "80%", margin: "0 auto", display: "flex", justifyContent: "center"}}>
                     <Cropper
                         ref={cropRef}
-                        style={{height: 400, width: "100%"}}
-                        zoomTo={0.5}
+                        style={{height: "100%"}}
+                        zoomTo={0}
                         aspectRatio={3}
                         dragMode="move"
                         preview=".img-preview"
@@ -60,29 +73,17 @@ export default function () {
                         background={false}
                         responsive={false}
                         autoCropArea={1}
-                        checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
+                        checkOrientation={false}
                         guides={true}
                     />
                 </div>
+                <Divider orientation={"left"}>预览图</Divider>
                 <div>
-                    <div className="box" style={{width: "50%", float: "right"}}>
-                        <h1>Preview</h1>
+                    <div className="box" style={{width: "80%", margin: "0 auto"}}>
                         <div
                             className="img-preview"
                             style={{width: "100%", float: "left", height: "300px", overflow: "hidden"}}
                         />
-                    </div>
-                    <div
-                        className="box"
-                        style={{width: "50%", float: "right", height: "300px"}}
-                    >
-                        <h1>
-                            <span>Crop</span>
-                            <button style={{float: "right"}} onClick={getCropData}>
-                                Crop Image
-                            </button>
-                        </h1>
-                        <img style={{width: "100%"}} src={cropData} alt="cropped"/>
                     </div>
                 </div>
                 <br style={{clear: "both"}}/>
