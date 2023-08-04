@@ -6,17 +6,23 @@ import "cropperjs/dist/cropper.css";
 
 
 export default function ({
-                             setCutImage = (imgBlob) => {
-                             },
+                             setCutImage,
+                             uploadStatus = false,
+                             setUploadStatus,
+                             enablePreview = true,
+                             tips,
+                             aspectRatio
                          }) {
 
     const [image, setImage] = useState("");
 
+    const [imageUrl, setImageUrl] = useState("");
     const [modalOpen, setModalOpen] = useState(false);
 
     const cropRef = useRef();
 
     const closeModal = () => {
+        setImage("");
         setModalOpen(false);
     }
 
@@ -27,6 +33,15 @@ export default function ({
         }
         setModalOpen(true);
         reader.readAsDataURL(file);
+    }
+
+    const onRemove = () => {
+        setImageUrl("");
+        setCutImage(null);
+    }
+    const onPreview = (file) => {
+        setImage(file.url);
+        setModalOpen(true);
     }
     const getCropData = async () => {
         if (typeof cropRef.current?.cropper !== "undefined") {
@@ -42,28 +57,38 @@ export default function ({
                     }, "image/jpeg", 95);
                 })
                 setCutImage(blob);
+                let dataURL = cropRef.current?.cropper.getCroppedCanvas().toDataURL("image/jpeg", 95);
+                setImageUrl(dataURL);
             } else {
                 setCutImage(blob);
+                let dataURL = cropRef.current?.cropper.getCroppedCanvas().toDataURL();
+                setImageUrl(dataURL);
             }
+
+            if (typeof setUploadStatus === "function") setUploadStatus(false);
+            closeModal();
         }
     };
 
     return <>
-        <Upload beforeUpload={onUpload} fileList={[]}>
-            <Button icon={<UploadOutlined/>}>
-                上传
-            </Button>
+        <Upload beforeUpload={onUpload}
+                accept={"image/*"}
+                onPreview={onPreview}
+                onRemove={onRemove}
+                listType={imageUrl ? "picture-card" : "text"}
+                fileList={imageUrl ? [{uid: "0", status: "done", url: imageUrl}] : []}>
+            {imageUrl ? null : <Button icon={<UploadOutlined/>} danger={uploadStatus}>上传</Button>}
         </Upload>
 
         <Modal open={modalOpen} onOk={getCropData} onCancel={closeModal} width={650}>
-            <div style={{width: 600, height: 400}}>
-                <Divider orientation={"left"}>建议尺寸 </Divider>
+            <div style={{width: 600}}>
+                <Divider orientation={"left"}>{tips}</Divider>
                 <div style={{width: "80%", margin: "0 auto", display: "flex", justifyContent: "center"}}>
                     <Cropper
                         ref={cropRef}
                         style={{height: "100%"}}
                         zoomTo={0}
-                        aspectRatio={3}
+                        aspectRatio={aspectRatio}
                         dragMode="move"
                         preview=".img-preview"
                         src={image}
@@ -77,15 +102,19 @@ export default function ({
                         guides={true}
                     />
                 </div>
-                <Divider orientation={"left"}>预览图</Divider>
-                <div>
-                    <div className="box" style={{width: "80%", margin: "0 auto"}}>
-                        <div
-                            className="img-preview"
-                            style={{width: "100%", float: "left", height: "300px", overflow: "hidden"}}
-                        />
-                    </div>
-                </div>
+                {enablePreview ?
+                    <>
+                        <Divider orientation={"left"}>预览图</Divider>
+                        <div>
+                            <div className="box" style={{width: "80%", margin: "0 auto"}}>
+                                <div
+                                    className="img-preview"
+                                    style={{width: "100%", float: "left", height: "300px", overflow: "hidden"}}
+                                />
+                            </div>
+                        </div>
+                    </>
+                    : null}
                 <br style={{clear: "both"}}/>
             </div>
         </Modal>

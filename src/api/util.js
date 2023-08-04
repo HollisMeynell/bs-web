@@ -75,6 +75,14 @@ HttpRequest.doProxy = function (config = config) {
     return this.post("/api/public/proxy", config);
 };
 
+export async function sleep(time) {
+    await new Promise((resolve) => {
+        setTimeout(() => {
+            resolve();
+        }, time)
+    })
+}
+
 export function getFlagUrlFromCountryCode(code) {
     if (code.length < 2) throw Error("code length err");
     code = code.toUpperCase();
@@ -91,14 +99,12 @@ export async function uploadImage(file, name) {
         return {
             fileKey: res.data
         }
-    }
-    else throw new Error(res.message)
+    } else throw new Error(res.message)
 }
 
 export async function uploadAllImage(files) {
-    const res =  await HttpRequest.post("/api/file/upload", files);
+    const res = await HttpRequest.post("/api/file/upload", files);
     if (res.code === 200) {
         return res.data
-    }
-    else throw new Error(res.message)
+    } else throw new Error(res.message)
 }
