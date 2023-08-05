@@ -1,11 +1,10 @@
 import {Outlet, useOutlet, useNavigate, useParams, useLocation} from "react-router";
 import ErrorPage from "../Err/error.jsx";
-import {Avatar, Breadcrumb, Button, Card, Divider, FloatButton, Image, Layout, Menu, Popover, Spin, theme} from "antd";
+import {Avatar, Breadcrumb, Button, Card, Divider, Image, Layout, Menu, Popover, Spin, theme} from "antd";
 import {Router as childRouter} from './child.jsx'
 import {Router as Favorites} from './home/favorites.jsx'
 import {Link} from "react-router-dom";
 import {Setter} from "./components.jsx";
-import Loading from "../components/loading/loading.jsx";
 import {useEffect, useState} from "react";
 import {
     AppstoreOutlined,

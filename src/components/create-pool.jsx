@@ -1,13 +1,16 @@
-import {Button, Modal, Col, Row, Input} from "antd";
+import {Button, Modal, Col, Row, Input, App} from "antd";
 import {useState} from "react";
 import ImageCropper from "./image-cropper.jsx";
 import {uploadImage} from "../api/util.js";
 import {createPool} from "../api/mapinfo.js";
+import TextArea from "antd/es/input/TextArea.js";
+import Editor from "@/components/markdown.jsx";
 
 const tipsStyle = {lineHeight: "100%", fontSize: 18};
-export default function ({node =<Button>create pool map</Button>}) {
+export default function ({children}) {
 
     const [insertData, setInsertData] = useState({});
+    const {message} = App.useApp();
 
     const [insertStatus, setInsertStatus] = useState({
         name: null,
@@ -64,18 +67,50 @@ export default function ({node =<Button>create pool map</Button>}) {
             allPass = false;
         }
 
-        if (allPass) {
-            const {fileKey} = await uploadImage(insertData.banner, "test.png");
-            const res = await createPool({
+        if (!allPass) {
+            setInsertStatus(status)
+            return false;
+        }
+        const key = "tip";
+        let res;
+        message.open({
+            key,
+            type: "loading",
+            content:"加载中"
+        })
+        try {
+            const {fileKey} = await uploadImage(insertData.banner, "banner.png");
+            res = await createPool({
                 name: insertData.name,
                 info: insertData.info,
                 banner: fileKey,
             });
-
+        } catch (e) {
+            message.open({
+                key,
+                type: "error",
+                content: `创建失败: ${e.message}`,
+                duration: 3
+            });
+            return false;
+        }
+        if (res.code === 200) {
+            message.open({
+                key,
+                type:"success",
+                content: '创建完成',
+                duration: 3
+            });
             return true;
+        } else {
+            message.open({
+                key,
+                type:"error",
+                content: `创建失败: ${res.message}`,
+                duration: 3
+            });
         }
 
-        setInsertStatus(status)
         return false;
     }
 
@@ -86,9 +121,12 @@ export default function ({node =<Button>create pool map</Button>}) {
         })
     }
 
+    const onOpen = () => {
+        setModalOpen(true);
+    }
 
     const onClose = () => {
-        setModalOpen((e) => !e);
+        setModalOpen(false);
     }
 
     const onOk = async () => {
@@ -100,39 +138,38 @@ export default function ({node =<Button>create pool map</Button>}) {
         }
     }
 
+    const row = (children)=> {
+        return <Row align={"middle"} justify="space-evenly" style={{marginTop: "1rem"}}>
+            <Col span={24}>{children}</Col>
+        </Row>
+    }
+
     return <>
-        <div onClick={onClose}>
-            {node}
+        <div onClick={onOpen}>
+            {children}
         </div>
         <Modal
             open={modalOpen}
             onCancel={onClose}
             onOk={onOk}
             confirmLoading={modalOkButton}
-
-            width={360}
+            width={"70vw"}
         >
-            <Row align={"middle"} justify="space-evenly" style={{marginTop: "2rem"}}>
-                <Col span={9} style={tipsStyle}>name</Col>
-                <Col span={9}><Input status={insertStatus.name} value={insertData.name}
-                                     onChange={setData("name")}/></Col>
+            <Row align={"middle"} justify="start" style={{marginTop: "2rem"}}>
+                <Col style={tipsStyle}>name</Col>
             </Row>
-            <Row align={"middle"} justify="space-evenly" style={{marginTop: "1rem"}}>
-                <Col span={9} style={tipsStyle}>info</Col>
-                <Col span={9}><Input status={insertStatus.info} value={insertData.info}
-                                     onChange={setData("info")}/></Col>
-            </Row>
-            <Row align={"middle"} justify="space-evenly" style={{marginTop: "1rem"}}>
-                <Col span={9} style={tipsStyle}>image</Col>
-                <Col span={9}>
-                    <ImageCropper
-                        uploadStatus={insertStatus.banner}
-                        setUploadStatus={setUploadStatus}
-                        tips={"建议尺寸 172 * 80"}
-                        aspectRatio={86 / 40}
-                        setCutImage={getImage}/>
-                </Col>
-            </Row>
+            {row(<Input status={insertStatus.name} value={insertData.name}
+                        onChange={setData("name")}/>)}
+            {row(<div style={tipsStyle}>banner</div>)}
+            {row(<ImageCropper
+                uploadStatus={insertStatus.banner}
+                setUploadStatus={setUploadStatus}
+                tips={"建议尺寸 172 * 80"}
+                aspectRatio={86 / 40}
+                setCutImage={getImage}/>)}
+            {row(<div style={tipsStyle}>info</div>)}
+            {row(<Editor edit={true} onChange={setData("info")}/>)}
+
         </Modal>
     </>
 }

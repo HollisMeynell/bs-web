@@ -1,13 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import './style/index.css'
+import '@/style/index.css'
 import {App, ConfigProvider, message, theme} from "antd";
-import {Router as indexRouter} from './page/index.jsx'
-import {Router as devRouter} from './page/developer.jsx'
-import {Router as homeRouter} from './page/home.jsx'
-import {Router as bindRouter} from './page/bind.jsx'
-import {Router as userInfoRouter} from './page/userInfo.jsx'
-import store from "./components/store.js";
+import {Router as indexRouter} from '@/page/index.jsx'
+import {Router as devRouter} from '@/page/developer.jsx'
+import {Router as homeRouter} from '@/page/home.jsx'
+import {Router as bindRouter} from '@/page/bind.jsx'
+import {Router as userInfoRouter} from '@/page/userInfo.jsx'
+import store from "@/components/store.js";
 import {RouterProvider, createBrowserRouter} from "react-router-dom";
 import {Provider, useSelector} from "react-redux";
 

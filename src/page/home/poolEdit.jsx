@@ -1,5 +1,5 @@
 import {useEffect} from "react";
-import {Card, Col, Row} from "antd";
+import {Button, Card, Col, Row} from "antd";
 import PoolCard from "./poolCard.jsx";
 import './poolEdit.css'
 import CreatePool from "../../components/create-pool.jsx";
@@ -32,6 +32,8 @@ export default function ({setLoading}) {
         }
     }, []);
     return <>
-        <CreatePool/>
+        <CreatePool>
+            <Button>create pool map X</Button>
+        </CreatePool>
     </>
 }
