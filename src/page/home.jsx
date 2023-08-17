@@ -5,7 +5,7 @@ import {Router as childRouter} from './child.jsx'
 import {Router as Favorites} from './home/favorites.jsx'
 import {Link} from "react-router-dom";
 import {Setter} from "./components.jsx";
-import {useEffect, useState} from "react";
+import {useEffect, useLayoutEffect, useRef, useState} from "react";
 import {
     AppstoreOutlined,
     ExportOutlined,
@@ -42,6 +42,7 @@ export default function Home() {
             title: <Link to={url}>{path}</Link>,
         };
     });
+    const data = useRef({code:13});
 
     const routeList = [
         generateMenuItem(<Link to={''} children={"管理"}/>, "/home", <UngroupOutlined/>),
@@ -65,7 +66,7 @@ export default function Home() {
         });
     }
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         setMarkPool([{label: "请在管理页面添加", disabled: true,}]);
 
         getUserCard(userData.uid).then((data) => {

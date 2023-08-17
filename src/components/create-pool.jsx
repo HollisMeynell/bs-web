@@ -1,15 +1,12 @@
-import {Button, Modal, Col, Row, Input, App} from "antd";
-import {useState} from "react";
+import {Modal, Col, Row, Input, App} from "antd";
+import {useReducer, useState} from "react";
 import ImageCropper from "./image-cropper.jsx";
 import {uploadImage} from "../api/util.js";
 import {createPool} from "../api/mapinfo.js";
-import TextArea from "antd/es/input/TextArea.js";
 import Editor from "@/components/markdown.jsx";
+import {tipsStyle} from "@/components/js-style.js";
 
-const tipsStyle = {lineHeight: "100%", fontSize: 18};
 export default function ({children}) {
-
-    const [insertData, setInsertData] = useState({});
     const {message} = App.useApp();
 
     const [insertStatus, setInsertStatus] = useState({
@@ -17,16 +14,37 @@ export default function ({children}) {
         info: null,
         banner: false,
     });
+
+    const dataReduce = (state, action) => {
+        const newData = {
+            ...state
+        }
+        switch (action.type) {
+            case "set" : {
+                if (typeof action.value === "string") {
+                    newData[action.key] = action.value;
+                } else {
+                    newData[action.key] = action.value.target.value;
+                }
+                break;
+            }
+            case "img" : {
+                newData.banner = action.value;
+                break;
+            }
+            case "clear":{
+                return {}
+            }
+        }
+        return newData;
+    }
+    const [insertData, setInsertData] = useReducer(dataReduce, {}, v => v);
     const [modalOpen, setModalOpen] = useState(false);
     const [modalOkButton, setModalOkButton] = useState(false);
 
     const setData = (a) => {
         return (e) => {
-            const newData = {
-                ...insertData
-            }
-            newData[a] = e.target.value;
-            setInsertData(newData);
+            setInsertData({type: "set", key: a, value: e});
             if (insertStatus[a]) {
                 const newStatus = {
                     ...insertStatus
@@ -38,17 +56,14 @@ export default function ({children}) {
     }
 
     const getImage = (imgBlob = new Blob()) => {
-        const newData = {
-            ...insertData,
-            banner: imgBlob,
-        }
         if (imgBlob) {
             setInsertStatus({
                 ...insertStatus,
                 banner: false
             })
         }
-        setInsertData(newData);
+
+        setInsertData({type: "img", value: imgBlob});
     }
 
     const onSubmit = async () => {
@@ -76,7 +91,7 @@ export default function ({children}) {
         message.open({
             key,
             type: "loading",
-            content:"加载中"
+            content: "加载中"
         })
         try {
             const {fileKey} = await uploadImage(insertData.banner, "banner.png");
@@ -97,7 +112,7 @@ export default function ({children}) {
         if (res.code === 200) {
             message.open({
                 key,
-                type:"success",
+                type: "success",
                 content: '创建完成',
                 duration: 3
             });
@@ -105,7 +120,7 @@ export default function ({children}) {
         } else {
             message.open({
                 key,
-                type:"error",
+                type: "error",
                 content: `创建失败: ${res.message}`,
                 duration: 3
             });
@@ -134,14 +149,9 @@ export default function ({children}) {
         const submitOK = await onSubmit();
         setModalOkButton(false)
         if (submitOK) {
+            setInsertData({type:"clear"});
             setModalOpen(false);
         }
-    }
-
-    const row = (children)=> {
-        return <Row align={"middle"} justify="space-evenly" style={{marginTop: "1rem"}}>
-            <Col span={24}>{children}</Col>
-        </Row>
     }
 
     return <>
@@ -156,19 +166,37 @@ export default function ({children}) {
             width={"70vw"}
         >
             <Row align={"middle"} justify="start" style={{marginTop: "2rem"}}>
-                <Col style={tipsStyle}>name</Col>
+                <Col span={12} style={tipsStyle}>name</Col>
+                <Col span={12} style={tipsStyle}>banner</Col>
             </Row>
-            {row(<Input status={insertStatus.name} value={insertData.name}
-                        onChange={setData("name")}/>)}
-            {row(<div style={tipsStyle}>banner</div>)}
-            {row(<ImageCropper
-                uploadStatus={insertStatus.banner}
-                setUploadStatus={setUploadStatus}
-                tips={"建议尺寸 172 * 80"}
-                aspectRatio={86 / 40}
-                setCutImage={getImage}/>)}
-            {row(<div style={tipsStyle}>info</div>)}
-            {row(<Editor edit={true} onChange={setData("info")}/>)}
+
+            <Row align={"middle"} justify="space-evenly" style={{marginTop: "1rem"}}>
+                <Col span={12}>
+                    <div style={{maxWidth: "10rem"}}>
+                        <Input
+                            status={insertStatus.name}
+                            value={insertData.name}
+                            onChange={setData("name")}
+                        />
+                    </div>
+                </Col>
+                <Col span={12}>
+                    <ImageCropper
+                        uploadStatus={insertStatus.banner}
+                        setUploadStatus={setUploadStatus}
+                        tips={"建议尺寸 172 * 80"}
+                        aspectRatio={86 / 40}
+                        setCutImage={getImage}/>
+                </Col>
+            </Row>
+
+            <Row align={"middle"} justify="start" style={{marginTop: "2rem"}}>
+                <Col style={tipsStyle}>info</Col>
+            </Row>
+
+            <Row align={"middle"} justify="space-evenly" style={{marginTop: "1rem"}}>
+                <Col span={24}><Editor edit onChange={setData("info")} editStatus={insertStatus.info}/></Col>
+            </Row>
 
         </Modal>
     </>

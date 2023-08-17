@@ -75,14 +75,6 @@ HttpRequest.doProxy = function (config = config) {
     return this.post("/api/public/proxy", config);
 };
 
-export async function sleep(time) {
-    await new Promise((resolve) => {
-        setTimeout(() => {
-            resolve();
-        }, time)
-    })
-}
-
 export function getFlagUrlFromCountryCode(code) {
     if (code.length < 2) throw Error("code length err");
     code = code.toUpperCase();

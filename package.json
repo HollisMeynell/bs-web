@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.0.1",
-    "@dnd-kit/core": "^6.0.8",
     "@reduxjs/toolkit": "^1.9.5",
     "ahooks": "^3.7.8",
     "antd": "^5.4.7",

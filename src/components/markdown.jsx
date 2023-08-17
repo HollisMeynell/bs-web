@@ -10,12 +10,11 @@ import remarkFrontmatter from "remark-frontmatter";
 
 
 
-export default function Editor({edit, defaultValue, onChange}) {
+export default function Editor({edit, defaultValue, onChange, editStatus}) {
     const box = useRef(null);
     const [mdStr, setMdStr] = useState(defaultValue);
     function handleChange(e) {
         typeof onChange === 'function' && onChange(e.target.value);
-        console.log(e.target.value)
         setMdStr(e.target.value);
     }
 
@@ -33,7 +32,14 @@ export default function Editor({edit, defaultValue, onChange}) {
 
     return <div className={"markdown-body"} style={{marginTop: 20}} ref={box}>
         {!!edit ?
-            <Input.TextArea style={{minHeight: 180}} value={mdStr} autoSize onChange={handleChange} placeholder={"Markdown 支持,如果想使用图片请用外链插入markdown '![text](url)'"}/>
+            <Input.TextArea
+                autoSize
+                value={mdStr}
+                status={editStatus}
+                onChange={handleChange}
+                style={{minHeight: 180}}
+                placeholder={"Markdown 支持,如果想使用图片请用外链插入markdown '![text](url)'"}
+            />
             :
             <ReactMarkdown remarkPlugins={[remarkGfm,remarkMath,remarkFrontmatter]} children={mdStr}/>
         }

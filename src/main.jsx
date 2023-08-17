@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import ReactDOM from 'react-dom/client'
 import '@/style/index.css'
 import {App, ConfigProvider, message, theme} from "antd";
@@ -10,6 +10,8 @@ import {Router as userInfoRouter} from '@/page/userInfo.jsx'
 import store from "@/components/store.js";
 import {RouterProvider, createBrowserRouter} from "react-router-dom";
 import {Provider, useSelector} from "react-redux";
+import {egg} from "@/components/other/egg.js";
+import clickBoomEffect from "@/components/other/boom.js";
 
 const router = createBrowserRouter([indexRouter, homeRouter, devRouter, bindRouter, userInfoRouter])
 
@@ -21,6 +23,14 @@ function Main() {
     if (themeConf.dark) {
         themeConf.algorithm = theme.darkAlgorithm;
     }
+
+    useEffect(() => {
+        setTimeout(clickBoomEffect, 32*1000);
+        document.addEventListener("keydown", egg);
+        return () => {
+            document.removeEventListener("keydown", egg);
+        }
+    }, []);
     return <ConfigProvider theme={themeConf}>
         <RouterProvider router={router}/>
     </ConfigProvider>

@@ -71,17 +71,22 @@ export default function ({
     };
 
     return <>
-        <Upload beforeUpload={onUpload}
-                accept={"image/*"}
-                onPreview={onPreview}
-                onRemove={onRemove}
-                listType={imageUrl ? "picture-card" : "text"}
-                fileList={imageUrl ? [{uid: "0", status: "done", url: imageUrl}] : []}>
-            {imageUrl ? null : <Button icon={<UploadOutlined/>} danger={uploadStatus}>上传</Button>}
-        </Upload>
-
-        <Modal open={modalOpen} onOk={getCropData} onCancel={closeModal} width={650}>
-            <div style={{width: 600}}>
+        <div style={{width:84, height:40, display:"flex"
+            , justifyContent:"center", alignItems:"center"
+            , overflow:"hidden"}}>
+            <div style={{translate:"-9 2"}}>
+                <Upload beforeUpload={onUpload}
+                        accept={"image/*"}
+                        onPreview={onPreview}
+                        onRemove={onRemove}
+                        listType={imageUrl ? "picture-card" : "text"}
+                        fileList={imageUrl ? [{uid: "0", status: "done", url: imageUrl}] : []}>
+                    {imageUrl ? null : <Button icon={<UploadOutlined/>} danger={uploadStatus}>上传</Button>}
+                </Upload>
+            </div>
+        </div>
+        <Modal open={modalOpen} onOk={getCropData} onCancel={closeModal} width={550}>
+            <div style={{width: 500}}>
                 <Divider orientation={"left"}>{tips}</Divider>
                 <div style={{width: "80%", margin: "0 auto", display: "flex", justifyContent: "center"}}>
                     <Cropper

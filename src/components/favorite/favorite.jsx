@@ -1,5 +1,5 @@
 import './style.css'
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useLayoutEffect, useRef, useState} from "react";
 import {theme} from "antd";
 
 export function FavoriteBox( {defaultValue, onChange, color} ) {
@@ -14,7 +14,7 @@ export function FavoriteBox( {defaultValue, onChange, color} ) {
         setChecked((r) => !r);
     }
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         svg.current.style.setProperty('--color', color || token.colorPrimaryActive);
     }, [token, color]);
 

@@ -1,11 +1,11 @@
 import './loading2.css'
-import {useEffect, useRef} from "react";
+import {useLayoutEffect, useRef} from "react";
 import {theme} from "antd";
 
 export default function ({color}){
     const {token} = theme.useToken();
     const spinner = useRef(null);
-    useEffect(() => {
+    useLayoutEffect(() => {
         spinner.current.style.setProperty('--color', color || token.colorPrimaryActive);
     }, [token, color]);
 

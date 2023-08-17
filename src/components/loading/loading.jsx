@@ -2,11 +2,11 @@ import Loading1 from "./loading1.jsx";
 import Loading2 from "./loading2.jsx";
 import Loading3 from "./loading3.jsx";
 import Loading4 from "./loading4.jsx";
-import {useEffect, useState} from "react";
+import {useLayoutEffect, useState} from "react";
 
 export default function ({index = 0, color}) {
     const [loading, setLoading] = useState(null);
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (index) {
             index = Math.round(index) % 5;
         } else {
