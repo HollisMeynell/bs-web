@@ -71,10 +71,10 @@ export default function ({
     };
 
     return <>
-        <div style={{width:84, height:40, display:"flex"
-            , justifyContent:"center", alignItems:"center"
-            , overflow:"hidden"}}>
-            <div style={{translate:"-9 2"}}>
+        <div style={{width:100, height:50, display:"flex",
+            justifyContent:"center", alignItems:"center",
+            overflow:"hidden"}}>
+            <div style={imageUrl ? {transform: "translate(4px, 5px)"} : null}>
                 <Upload beforeUpload={onUpload}
                         accept={"image/*"}
                         onPreview={onPreview}

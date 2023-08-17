@@ -100,3 +100,7 @@ export async function uploadAllImage(files) {
         return res.data
     } else throw new Error(res.message)
 }
+
+export function getImageUrl(key) {
+    return `/api/file/image/${key}`
+}
