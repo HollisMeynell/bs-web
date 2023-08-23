@@ -1,0 +1,15 @@
+.markdown-controller {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    opacity: 0.5;
+    flex-direction: row;
+    justify-content: space-around;
+    align-content: center;
+}
+
+.markdown-body {
+    min-height: 40px;
+    position: relative;
+    overflow: auto;
+}

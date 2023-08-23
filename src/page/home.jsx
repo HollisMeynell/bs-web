@@ -3,27 +3,28 @@ import ErrorPage from "../Err/error.jsx";
 import {Avatar, Breadcrumb, Button, Card, Divider, Image, Layout, Menu, Popover, Spin, theme} from "antd";
 import {Router as childRouter} from './child.jsx'
 import {Router as Favorites} from './home/favorites.jsx'
+import {Router as PoolEdit} from './home/poolEdit.jsx'
 import {Link} from "react-router-dom";
 import {Setter} from "./components.jsx";
+import {default as Index} from "./home/index.jsx";
 import {useEffect, useLayoutEffect, useRef, useState} from "react";
 import {
     AppstoreOutlined,
     ExportOutlined,
-    FolderOpenOutlined,
+    FolderOpenOutlined, HomeOutlined,
     MenuFoldOutlined, ReloadOutlined,
     UngroupOutlined,
     UserOutlined
 } from "@ant-design/icons";
-import Edit from "./home/poolEdit.jsx";
-import {getFlagUrlFromCountryCode, getUser} from "../api/util.js";
-import {getUserCard} from "../api/userinfo.js";
-import {getMarkPool} from "../api/mapinfo.js";
+import {getFlagUrlFromCountryCode, getUser} from "@/api/util.js";
+import {getUserCard} from "@/api/userinfo.js";
+import {getMarkPool} from "@/api/mapinfo.js";
 
 export const Router = {
     path: '/home',
     element: <Home/>,
     errorElement: <ErrorPage/>,
-    children: [childRouter, Favorites, {path: 'mappool/:mid', element: <div children={"3"}/>}]
+    children: [childRouter, Favorites, PoolEdit, {path: 'mappool/:mid', element: <div children={"3"}/>}]
 }
 
 export default function Home() {
@@ -42,12 +43,13 @@ export default function Home() {
             title: <Link to={url}>{path}</Link>,
         };
     });
-    const data = useRef({code:13});
+    const data = useRef({code: 13});
 
     const routeList = [
-        generateMenuItem(<Link to={''} children={"管理"}/>, "/home", <UngroupOutlined/>),
-        generateMenuItem(<Link to={'favorites'} children={"收藏"}/>, "/home/favorites", <AppstoreOutlined/>),
+        generateMenuItem(<Link to={''} children={"主页"}/>, "/home", <HomeOutlined/>),
         generateMenuItem("图池", "/home/mappool", <FolderOpenOutlined/>, markPool),
+        generateMenuItem(<Link to={'favorites'} children={"收藏"}/>, "/home/favorites", <AppstoreOutlined/>),
+        generateMenuItem(<Link to={'manege'} children={"管理"}/>, "/home/manege", <UngroupOutlined/>),
     ];
 
     function updateMenu() {
@@ -87,13 +89,13 @@ export default function Home() {
         navigate('/');
     }
 
-    return <Layout style={{color: token.colorText, minHeight: '100%'}}>
+    return <Layout style={{color: token.colorText, maxHeight: '100%', height: '100%'}}>
         {/*侧边栏*/}
         <Layout.Sider theme={'light'} trigger={null}>
             <Menu
                 mode="inline"
                 items={routeList}
-                onOpenChange={(title)=>{
+                onOpenChange={(title) => {
                     if (title.includes('/home/mappool')) {
                         updateMenu();
                     }
@@ -118,7 +120,7 @@ export default function Home() {
             </Layout.Header>
             <Layout.Content style={{height: '100%'}}>
                 {/*主体容器*/}
-                {outlet || <Edit/>}
+                {outlet || <Index/>}
                 <Setter/>
             </Layout.Content>
         </Layout>

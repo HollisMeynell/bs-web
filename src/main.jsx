@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react'
 import ReactDOM from 'react-dom/client'
 import '@/style/index.css'
-import {App, ConfigProvider, message, theme} from "antd";
+import {App, ConfigProvider, theme} from "antd";
 import {Router as indexRouter} from '@/page/index.jsx'
 import {Router as devRouter} from '@/page/developer.jsx'
 import {Router as homeRouter} from '@/page/home.jsx'
@@ -25,7 +25,7 @@ function Main() {
     }
 
     useEffect(() => {
-        setTimeout(clickBoomEffect, 32*1000);
+        setTimeout(clickBoomEffect, 32 * 1000);
         document.addEventListener("keydown", egg);
         return () => {
             document.removeEventListener("keydown", egg);
@@ -38,10 +38,10 @@ function Main() {
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     // <React.StrictMode>
-        <App style={{height:'100%'}}>
-            <Provider store={store}>
-                <Main/>
-            </Provider>
-        </App>
+    <App style={{height: '100%', overflow: "hidden"}}>
+        <Provider store={store}>
+            <Main/>
+        </Provider>
+    </App>
     // </React.StrictMode>
 )
