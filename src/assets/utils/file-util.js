@@ -56,8 +56,13 @@ export async function writeImageToClipboard(image) {
         const img = await dataURLtoBlob(image);
         const items = {};
         items[img.type] = img
-        const imgClipboard = new ClipboardItem(items);
-        await navigator.clipboard.write([imgClipboard]);
+        let permission = await navigator.permissions.query({name:"clipboard-write"});
+        if (permission.state === "granted") {
+            const imgClipboard = new ClipboardItem(items);
+            await navigator.clipboard.write([imgClipboard]);
+        } else {
+            throw new Error("can not support");
+        }
     }
 }
 
