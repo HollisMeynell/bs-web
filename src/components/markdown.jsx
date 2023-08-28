@@ -7,8 +7,6 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkFrontmatter from "remark-frontmatter";
-import 'mac-scrollbar/dist/mac-scrollbar.css';
-import {MacScrollbar} from "mac-scrollbar";
 
 export default function Editor({
                                    edit,

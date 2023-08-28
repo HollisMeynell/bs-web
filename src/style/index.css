@@ -1,3 +1,7 @@
+@font-face {
+    font-family: "Blueaka";
+    src: url(@/assets/font/Blueaka.otf);
+}
 body, html{
     margin: 0;
     padding: 0;
@@ -6,6 +10,9 @@ body, html{
     height: 100%;
 }
 
+* {
+    font-family: Blueaka, sans-serif;
+}
 
 textarea {
     height: 100% !important;
