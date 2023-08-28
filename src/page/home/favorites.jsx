@@ -30,6 +30,17 @@ export default function Favorites() {
         await saveFile("png", image);
     }
 
+    async function downloadOld() {
+        const node = filterR.current;
+        const width = node.clientWidth
+        const height = node.scrollHeight
+        const image = await dom2image.toPng(node, {width, height});
+        const link = document.createElement('a');
+        link.download = "paint.png";
+        link.href = image;
+        link.click();
+    }
+
     return <>
         <div style={{margin: '10px 10px'}}>
             <Space size={[10, 10]} align="start" wrap>
@@ -38,6 +49,7 @@ export default function Favorites() {
                 </div>
                 <Button onClick={copy}>{"<-"}复制到剪切板</Button>
                 <Button onClick={download}>下载文件</Button>
+                <Button onClick={downloadOld}>下载文件-兼容方案</Button>
                 {/*<MapCard bid={1972258} r={"a"}/>*/}
                 {/*<MapCard bid={1972258} r={"ab"}/>*/}
                 {/*<MapCard bid={1972258} r={"abc"}/>*/}
