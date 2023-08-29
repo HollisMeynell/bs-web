@@ -15,6 +15,7 @@ export default defineConfig({
         port: 16113,
         strictPort: true,
     },
+    base:"/bs-web/",
     build: {
         cssCodeSplit: true,
         outDir: process.env.BUILD_PATH || 'static',
