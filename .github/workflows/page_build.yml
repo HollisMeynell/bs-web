@@ -20,6 +20,9 @@ concurrency:
   group: 'pages'
   cancel-in-progress: true
 
+env:
+  BUILD_PATH: dist
+
 jobs:
   # 单次部署的工作描述
   deploy:
