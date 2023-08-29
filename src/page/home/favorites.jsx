@@ -34,7 +34,7 @@ export default function Favorites() {
         const node = filterR.current;
         const width = node.clientWidth
         const height = node.scrollHeight
-        const image = await dom2image.toPng(node, {width, height});
+        const image = await dom2image.toPng(node, {width, height, toDataUrl: true});
         const link = document.createElement('a');
         link.download = "paint.png";
         link.href = image;

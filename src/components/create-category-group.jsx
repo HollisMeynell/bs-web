@@ -2,7 +2,7 @@ import {App, Button, Card, Col, Input, Modal, Popover, Row} from "antd";
 import {useReducer, useState} from "react";
 import {tipsStyle} from "@/components/js-style.js";
 import Editor from "@/components/markdown.jsx";
-import {hexColor2i32} from "@/components/util.js";
+import {hexColor2i32} from "@/assets/utils/color-util.js";
 import {SketchPicker} from "react-color";
 import {createCategoryGroup} from "@/api/mapinfo.js";
 

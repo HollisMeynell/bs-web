@@ -1,4 +1,5 @@
 import {Buffer} from "buffer";
+
 export async function saveFile(type, file) {
     let fileHandle;
     switch (type.toLowerCase()) {
@@ -9,12 +10,12 @@ export async function saveFile(type, file) {
                 suggestedName: "pinter.jpg",
                 type: [{
                     description: "保存到jpg",
-                    accept:{
+                    accept: {
                         'text/plain': ['.txt'],
                         "image/jpeg": [".jpg"],
                     }
                 }]
-            })
+            });
             break;
         }
         case "png": {
@@ -22,11 +23,11 @@ export async function saveFile(type, file) {
                 suggestedName: "pinter.png",
                 type: [{
                     description: "保存到png",
-                    accept:{
+                    accept: {
                         "image/png": [".png"],
                     }
                 }]
-            })
+            });
             break;
         }
         case "svg": {
@@ -34,11 +35,11 @@ export async function saveFile(type, file) {
                 suggestedName: "pinter.svg",
                 type: [{
                     description: "保存到svg",
-                    accept:{
+                    accept: {
                         "image/svg+xml": [".svg"],
                     }
                 }]
-            })
+            });
             break;
         }
     }
@@ -52,23 +53,34 @@ export async function saveFile(type, file) {
 }
 
 export async function writeImageToClipboard(image) {
-    if (typeof image === "string" && image.startsWith("data:")) {
-        const img = await dataURLtoBlob(image);
-        const items = {};
-        items[img.type] = img
-        let permission = await navigator.permissions.query({name:"clipboard-write"});
-        if (permission.state === "granted") {
-            const imgClipboard = new ClipboardItem(items);
-            await navigator.clipboard.write([imgClipboard]);
-        } else {
-            throw new Error("can not support");
-        }
+
+    let permission = await navigator.permissions.query({name: "clipboard-write"});
+    if (permission.state !== "granted") {
+        throw new Error("can not support");
     }
+
+    let img
+    if (typeof image === "string" && image.startsWith("data:")) {
+        img = await dataURLtoBlob(image);
+    } else {
+        img = image;
+    }
+
+    const items = {};
+    items[img.type] = img
+    const imgClipboard = new ClipboardItem(items);
+    await navigator.clipboard.write([imgClipboard]);
 }
 
-export function dataURLtoBlob (dataurl) {
+export function dataURLtoBlob(dataurl, type) {
     const arr = dataurl.split(',');
-    const mime = arr[0].match(/:(.*?);/)[1];
+    let mime;
+    if (type && typeof type === "string"){
+        mime = type;
+    } else {
+        mime = arr[0].match(/:(.*?);/)[1];
+    }
+
     const b = Buffer.from(arr[1], 'base64');
-    return new Blob([b], { type: mime });
+    return new Blob([b], {type: mime});
 }

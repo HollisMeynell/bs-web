@@ -32,11 +32,3 @@ export function i32Color2Hex(i) {
         return `#${(i & 0xFFFFFFFF).toString(16)}`;
     }
 }
-
-export async function sleep(time) {
-    await new Promise((resolve) => {
-        setTimeout(() => {
-            resolve();
-        }, time)
-    })
-}

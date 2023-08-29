@@ -16,6 +16,7 @@ export default defineConfig({
         strictPort: true,
     },
     build: {
-        outDir: 'static'
+        cssCodeSplit: true,
+        outDir: process.env.BUILD_PATH || 'static',
     }
 })

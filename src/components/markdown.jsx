@@ -64,10 +64,7 @@ export default function Editor({
                 disabled={!edit}
                 placeholder={"Markdown 支持,如果想使用图片请用外链插入markdown '![text](url)'"}
             />
-            :
-            <MacScrollbar style={{maxHeight: "100%", maxWidth: "100%"}}>
-                <ReactMarkdown remarkPlugins={[remarkGfm, remarkMath, remarkFrontmatter]} children={mdStr}/>
-            </MacScrollbar>
+            : <ReactMarkdown remarkPlugins={[remarkGfm, remarkMath, remarkFrontmatter]} children={mdStr}/>
         }
         <div hidden={!allowControl} className={"markdown-controller"}>
             <Switch checkedChildren="预览" unCheckedChildren="编辑" checked={!editText} onChange={handleShow}/>

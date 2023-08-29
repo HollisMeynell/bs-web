@@ -1,3 +1,5 @@
+import {dataURLtoBlob} from "@/assets/utils/file-util.js";
+
 const util = newUtil();
 const inliner = newInliner()
 const fontFaces = newFontFaces()
@@ -15,7 +17,9 @@ const dom2image = {
     toSvg: toSvg,
     toPng: toPng,
     toJpeg: toJpeg,
+    toWebp: toWebp,
     toBlob: toBlob,
+
     toPixelData: toPixelData,
     impl: {
         fontFaces: fontFaces,
@@ -35,9 +39,10 @@ const dom2image = {
  * @param {Number} options.width - width to be applied to node before rendering.
  * @param {Number} options.height - height to be applied to node before rendering.
  * @param {Object} options.style - an object whose properties to be copied to node's style before rendering.
- * @param {Number} options.quality - a Number between 0 and 1 indicating image quality (applicable to JPEG only),
+ * @param {Number} options.quality - a Number between 0 and 1 indicating image quality (applicable to JPEG or WEBP only),
  defaults to 1.0.
  * @param {String} options.imagePlaceholder - dataURL to use as a placeholder for failed images, default behaviour is to fail fast on images we can't fetch
+ * @param {Boolean} options.toDataUrl - Used to control the output result, if true, output as dataURL, if false, output as Blob, default is false
  * @param {Boolean} options.cacheBust - set to true to cache bust by appending the time to the request url
  * @return {Promise} - A promise that is fulfilled with a SVG image data URL
  * */
@@ -93,8 +98,33 @@ function toPixelData(node, options) {
  * @return {Promise} - A promise that is fulfilled with a PNG image data URL
  * */
 function toPng(node, options) {
-    return draw(node, options || {}).then(function (canvas) {
-        return canvas.toDataURL()
+    return new Promise(async (resolve) => {
+        let canvas = await draw(node, options || {});
+        if (options?.toDataUrl) {
+            resolve(canvas.toDataURL("image/png"));
+        } else {
+            canvas.toBlob((blob) => {
+                resolve(blob);
+            }, "image/png");
+        }
+    })
+}
+
+/**
+ * @param {Node} node - The DOM Node object to render
+ * @param {Object} options - Rendering options, @see {@link toSvg}
+ * @return {Promise} - A promise that is fulfilled with a JPEG image data URL
+ * */
+function toWebp(node, options) {
+    return new Promise(async (resolve) => {
+        let canvas = await draw(node, options || {});
+        if (options?.toDataUrl) {
+            resolve(canvas.toDataURL("image/webp", options?.quality || 1.0));
+        } else {
+            canvas.toBlob((blob) => {
+                resolve(blob);
+            }, "image/webp", options?.quality || 1.0);
+        }
     })
 }
 
@@ -104,9 +134,15 @@ function toPng(node, options) {
  * @return {Promise} - A promise that is fulfilled with a JPEG image data URL
  * */
 function toJpeg(node, options) {
-    options = options || {}
-    return draw(node, options).then(function (canvas) {
-        return canvas.toDataURL('image/jpeg', options.quality || 1.0)
+    return new Promise(async (resolve) => {
+        let canvas = await draw(node, options || {});
+        if (options?.toDataUrl) {
+            resolve(canvas.toDataURL("image/jpeg", options?.quality || 1.0));
+        } else {
+            canvas.toBlob((blob) => {
+                resolve(blob);
+            }, "image/jpeg", options?.quality || 1.0);
+        }
     })
 }
 
@@ -295,7 +331,8 @@ function cloneNode(node, filter, root) {
             clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
 
             if (!(clone instanceof SVGRectElement)) return
-                ;['width', 'height'].forEach(function (attribute) {
+                ;
+            ['width', 'height'].forEach(function (attribute) {
                 const value = clone.getAttribute(attribute)
                 if (!value) return
 
@@ -407,6 +444,7 @@ function newUtil() {
     }
 
     function toBlob(canvas) {
+
         return new Promise(function (resolve) {
             const binaryString = window.atob(canvas.toDataURL().split(',')[1])
             const length = binaryString.length
@@ -427,8 +465,7 @@ function newUtil() {
             return new Promise(function (resolve) {
                 canvas.toBlob(resolve)
             })
-
-        return toBlob(canvas)
+        return dataURLtoBlob(canvas.toDataURL().split(',')[1])
     }
 
     function resolveUrl(url, baseUrl) {
@@ -789,4 +826,4 @@ function newImages() {
     }
 }
 
-export { dom2image }
+export {dom2image}
