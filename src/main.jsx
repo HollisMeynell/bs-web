@@ -13,7 +13,12 @@ import {Provider, useSelector} from "react-redux";
 import {egg} from "@/components/other/egg.js";
 import clickBoomEffect from "@/components/other/boom.js";
 
-const router = createBrowserRouter([indexRouter, homeRouter, devRouter, bindRouter, userInfoRouter])
+const router = createBrowserRouter(
+    [indexRouter, homeRouter, devRouter, bindRouter, userInfoRouter],
+    {
+        basename: import.meta.env.BASE_URL || ""
+    }
+)
 
 
 function Main() {
