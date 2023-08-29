@@ -102,5 +102,5 @@ export async function uploadAllImage(files) {
 }
 
 export function getImageUrl(key) {
-    return `http://localhost:8080/api/file/image/${key}`
+    return `${import.meta.env.DEV?"http://localhost:8080":""}/api/file/image/${key}`
 }
