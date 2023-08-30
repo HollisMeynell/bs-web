@@ -4,7 +4,7 @@ import './favorites.css';
 import FilterCard from "@/components/card/filter-card.jsx";
 import {useRef} from "react";
 import {dom2image} from "@/assets/utils/dom-to-image.js";
-import {saveFile, writeImageToClipboard} from "@/assets/utils/file-util.js";
+import {downloadFile, saveFile, writeImageToClipboard} from "@/assets/utils/file-util.js";
 
 export const Router = {
     path: 'favorites', element: <Favorites/>, errorElement: <ErrorPage/>
@@ -19,7 +19,6 @@ export default function Favorites() {
         const height = node.scrollHeight
         const image = await dom2image.toPng(node, {width, height});
         await writeImageToClipboard(image);
-        alert("OK~");
     }
 
     async function download() {
@@ -35,10 +34,7 @@ export default function Favorites() {
         const width = node.clientWidth
         const height = node.scrollHeight
         const image = await dom2image.toPng(node, {width, height, toDataUrl: true});
-        const link = document.createElement('a');
-        link.download = "paint.png";
-        link.href = image;
-        link.click();
+        downloadFile(image, "paint.png");
     }
 
     return <>

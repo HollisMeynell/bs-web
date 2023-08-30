@@ -1,5 +1,16 @@
 import {Buffer} from "buffer";
 
+export function downloadFile(f, name = "file") {
+    const link = document.createElement('a');
+    if (typeof f === "string") {
+        link.href = f;
+    } else {
+        link.href = window.URL.createObjectURL(f);
+    }
+    link.download = name;
+    link.click();
+}
+
 export async function saveFile(type, file) {
     let fileHandle;
     switch (type.toLowerCase()) {
@@ -75,7 +86,7 @@ export async function writeImageToClipboard(image) {
 export function dataURLtoBlob(dataurl, type) {
     const arr = dataurl.split(',');
     let mime;
-    if (type && typeof type === "string"){
+    if (type && typeof type === "string") {
         mime = type;
     } else {
         mime = arr[0].match(/:(.*?);/)[1];

@@ -19,14 +19,19 @@ export default function Editor({
                                    maxWidth
                                }) {
     const box = useRef(null);
-    const textArea = useRef(null);
     const [mdStr, setMdStr] = useState(defaultValue);
     const [editText, setEditText] = useState(edit);
 
     function handleChange(e) {
+        let text;
+        if (typeof e?.target?.value == "undefined") {
+            text = e;
+        } else {
+            text = e.target.value;
+        }
         if (edit) {
-            typeof onChange === 'function' && onChange(e.target.value);
-            setMdStr(e.target.value);
+            typeof onChange === 'function' && onChange(text);
+            setMdStr(text);
         }
     }
 
@@ -37,24 +42,42 @@ export default function Editor({
 
     async function onTextAreaPaset(e) {
         const clipboardData = e.clipboardData || e.originalEvent.clipboardData;
+        const textArea = e.target;
         if (!(clipboardData || clipboardData.items)) return;
+        textArea.style.cursor = "wait";
         for (const item of clipboardData.items) {
             if (item.type.startsWith("image")) {
                 e.preventDefault();
-                debugger
                 await handleImage(item);
             }
         }
+        textArea.style.cursor = "default";
 
-        async function handleImage(item){
+        async function handleImage(item) {
             const file = item.getAsFile();
+            let text;
             try {
                 const res = await uploadImage(file, file.name);
-                await navigator.clipboard.writeText(`\n![image](${getImageUrl(res.fileKey)})`);
+                text = ` ![image](${res.fileKey}) `;
             } catch (e) {
-                await navigator.clipboard.writeText(`\n图片上传失败, 请稍后再试.`);
-                // do nothing
+                text = ` 图片上传失败, 请稍后再试. `;
             }
+            textAreaAddStr(text)
+        }
+
+        function textAreaAddStr(str) {
+            const s = {
+                start: textArea.selectionStart,
+                end: textArea.selectionEnd,
+            }
+            handleChange(textArea.value.substring(0, s.start) + str + textArea.value.substring(s.end));
+            s.start += str.length;
+            s.end += str.length;
+            setTimeout(() => {
+                textArea.focus();
+                textArea.selectionStart = s.start;
+                textArea.selectionEnd = s.end;
+            }, 0)
         }
     }
 
@@ -81,7 +104,6 @@ export default function Editor({
 
         {!!editText ?
             <Input.TextArea
-                ref={textArea}
                 autoSize
                 value={mdStr}
                 status={editStatus}
@@ -91,7 +113,8 @@ export default function Editor({
                 onPaste={onTextAreaPaset}
                 placeholder={"Markdown 支持,如果想使用图片请用外链插入markdown '![text](url)'"}
             />
-            : <ReactMarkdown remarkPlugins={[remarkGfm, remarkMath, remarkFrontmatter]} children={markdownReplaceImage(mdStr)}/>
+            : <ReactMarkdown remarkPlugins={[remarkGfm, remarkMath, remarkFrontmatter]}
+                             children={markdownReplaceImage(mdStr)}/>
         }
         <div hidden={!allowControl} className={"markdown-controller"}>
             <Switch checkedChildren="预览" unCheckedChildren="编辑" checked={!editText} onChange={handleShow}/>
@@ -99,7 +122,7 @@ export default function Editor({
     </div>
 }
 
-function markdownReplaceImage(md){
+function markdownReplaceImage(md) {
     const reg = /(?<=!\[image]\()(?=[a-z0-9\-]+\))/g
     debugger
     return md.replaceAll(reg, getImageUrl(""));
