@@ -52,6 +52,7 @@ export default function Editor({
                 const res = await uploadImage(file, file.name);
                 await navigator.clipboard.writeText(`\n![image](${getImageUrl(res.fileKey)})`);
             } catch (e) {
+                await navigator.clipboard.writeText(`\n图片上传失败, 请稍后再试.`);
                 // do nothing
             }
         }
@@ -68,11 +69,6 @@ export default function Editor({
             box.current.classList.remove('markdown-dark');
         }
     }, [isDark]);
-
-    useEffect(() => {
-        const textAreaNode = textArea.current.resizableTextArea.textArea;
-        // textAreaNode.addEventListener("");
-    }, []);
 
     const style = {};
     if (maxWidth) {
@@ -104,6 +100,7 @@ export default function Editor({
 }
 
 function markdownReplaceImage(md){
-    const reg = /(?<=!\[image]\()(?=[a-z0-9\-]{36}\))/
-    return md;
+    const reg = /(?<=!\[image]\()(?=[a-z0-9\-]+\))/g
+    debugger
+    return md.replaceAll(reg, getImageUrl(""));
 }
