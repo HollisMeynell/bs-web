@@ -34,7 +34,7 @@ export function getUser() {
 }
 
 export const HttpRequest = axios.create({
-    baseURL: 'http://localhost:8080',
+    baseURL: import.meta.env.DEV ? 'http://localhost:8080' : '',
     timeout: 3000,
 });
 HttpRequest.interceptors.request.use((config) => {
@@ -50,8 +50,9 @@ HttpRequest.interceptors.request.use((config) => {
 HttpRequest.interceptors.response.use((rep) => {
     return rep.data
 }, (error) => {
-    const {config} = error;
-    if (error.code === 'ECONNABORTED' && config.timeout <= TimeoutMax) {
+    const {config, response, request} = error;
+
+    if (error.code === 'ECONNABORTED' && config.timeout <= TimeoutMax) { // 超时处理
         config.timeout += TimeoutStep;
         const backoff = new Promise(function (resolve) {
             setTimeout(function () {
@@ -61,6 +62,8 @@ HttpRequest.interceptors.response.use((rep) => {
         return backoff.then(() => {
             return axios(config);
         })
+    } else if (response.code === 401) { // 访问未授权的接口
+        console.log(response);
     }
     return Promise.reject(error);
 })
@@ -102,5 +105,5 @@ export async function uploadAllImage(files) {
 }
 
 export function getImageUrl(key) {
-    return `${import.meta.env.DEV?"http://localhost:8080":""}/api/file/image/${key}`
+    return `${import.meta.env.DEV ? "http://localhost:8080" : ""}/api/file/image/${key}`
 }
