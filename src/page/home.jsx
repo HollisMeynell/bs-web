@@ -78,6 +78,8 @@ export default function Home() {
                 avatar: data.avatar_url,
                 country: data.country_code,
             })
+        }).catch((e) => {
+            console.log(e);
         });
     }, []);
 

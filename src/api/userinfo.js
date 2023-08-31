@@ -1,6 +1,14 @@
 import {HttpRequest, setUser} from "./util.js";
 
-export async function doLogin(code){
+export async function getOauthUrl() {
+    const response = await HttpRequest.get("/api/public/getOauthUrl");
+    if (response.code !== 200) {
+        throw Error(response.message);
+    }
+    return response.message;
+}
+
+export async function doLogin(code) {
     const config = {
         timeout: 60 * 1000,
         params: {
@@ -8,7 +16,6 @@ export async function doLogin(code){
         }
     }
     const response = await HttpRequest.get("/api/user/login", config);
-    console.log(response)
     if (response.code !== 200) {
         throw Error(response.message);
     }
