@@ -7,11 +7,11 @@ export async function getPublicPools() {
 }
 
 export async function getMarkPool() {
-    return await HttpRequest.get("/api/map/getMark");
+    return await HttpRequest.get("/api/pool/getMark");
 }
 
 export async function getMapInfo(bid) {
-    return await HttpRequest.get(`/api/map/getBeatMapInfo/${bid}`)
+    return await HttpRequest.get(`/api/pool/getBeatMapInfo/${bid}`)
 }
 
 const CREATE_POOL = {
@@ -21,17 +21,17 @@ const CREATE_POOL = {
 }
 
 export async function createPool(data = CREATE_POOL) {
-    return await HttpRequest.put("/api/map/createPool", data);
+    return await HttpRequest.put("/api/pool/createPool", data);
 }
 
 export async function getPoolInfo(data = {poolId: 0}) {
-    return await HttpRequest.get("/api/map/queryPublic", {
+    return await HttpRequest.get("/api/pool/queryPublic", {
         params: data,
     });
 }
 
 export async function queryPoolInfo(data = {poolName: ""}) {
-    return await HttpRequest.get("/api/map/queryPublic", {
+    return await HttpRequest.get("/api/pool/queryPublic", {
         params: data,
     });
 }
@@ -44,5 +44,5 @@ const CREATE_GROUP = {
 }
 
 export async function createCategoryGroup(data = CREATE_GROUP) {
-    return await HttpRequest.put("/api/map/createCategoryGroup", data);
+    return await HttpRequest.put("/api/pool/createCategoryGroup", data);
 }

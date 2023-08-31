@@ -16,7 +16,7 @@ function reduce(state, action) {
     };
     newValue[action.type] = action.value;
     return newValue;
-};
+}
 
 /***
  * 回调 onChange 注意: 当 value.length[1] 为750时逻辑为无上限

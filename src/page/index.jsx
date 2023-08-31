@@ -9,6 +9,7 @@ import imgCard1 from '../assets/card1.jpg';
 import imgCard2 from '../assets/card2.jpg';
 import imgCard3 from '../assets/card3.jpg';
 import {HttpRequest} from "../api/util.js";
+import {doLogin} from "@/assets/utils/login.js";
 
 const {useToken} = theme;
 
@@ -25,7 +26,7 @@ function Index() {
     }
 
     function guestEnter() {
-
+        doLogin().then();
     }
 
     return <>
