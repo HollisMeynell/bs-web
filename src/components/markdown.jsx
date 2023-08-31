@@ -124,6 +124,9 @@ export default function Editor({
 
 function markdownReplaceImage(md) {
     const reg = /(?<=!\[image]\()(?=[a-z0-9\-]+\))/g
-    debugger
-    return md.replaceAll(reg, getImageUrl(""));
+    if (typeof md === "string") {
+        return md.replaceAll(reg, getImageUrl(""));
+    } else {
+        return "";
+    }
 }
