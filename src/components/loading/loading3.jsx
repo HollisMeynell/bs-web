@@ -1,4 +1,4 @@
-import './loading3.css'
+import style from './loading3.module.scss'
 import {useLayoutEffect, useRef} from "react";
 import {theme} from "antd";
 

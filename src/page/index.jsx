@@ -81,7 +81,6 @@ function LoginCard({title, text, enter, index}) {
             // cover={<img src={cover} alt={"cover"}/>}
         >
             <Card.Meta title={title} description={button}/>
-
         </Card>
     </Col>
 }

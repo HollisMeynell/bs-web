@@ -1,0 +1,55 @@
+.user-card {
+  --avatar-size: 60px;
+  --card-item-spacing: 10px;
+  --icon-gutter: 6px;
+  --status-icon-margin: 10px;
+  display: inline-block;
+  font-family: var(--font-default);
+  width: 290px;
+  height: 120px;
+  background-color: hsl(var(--hsl-b4));
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+
+  .background-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 100%;
+      border-radius: 10px;
+      -o-object-fit: cover;
+      object-fit: cover;
+      transition: opacity .22s ease-in-out;
+    }
+    .overlay {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 100%;
+      border-radius: 10px;
+      background-color: hsla(var(--hsl-b5),.7);
+    }
+  }
+}
+
+
+.user-card--active.user-card--has-outline:after, .user-card:hover.user-card--has-outline:after {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  content: "";
+  border: 2px solid hsl(var(--hsl-l1));
+  border-radius: 10px;
+  pointer-events: none;
+}

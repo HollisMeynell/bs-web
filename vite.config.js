@@ -18,5 +18,12 @@ export default defineConfig({
     build: {
         cssCodeSplit: true,
         outDir: process.env.BUILD_PATH || 'static',
-    }
+    },
+    css: {
+        modules: {
+            localsConvention: 'camelCase',
+            scopeBehaviour: 'local',
+            generateScopedName: '[name]_[local]_[hash:5]',
+        }
+    },
 })

@@ -1,4 +1,4 @@
-import './loading1.css';
+import style from './loading1.module.scss';
 import {useLayoutEffect, useRef} from "react";
 import {theme} from "antd";
 
@@ -9,8 +9,8 @@ export default function Loading1({color}){
     useLayoutEffect(() => {
         spinner.current.style.setProperty('--color', color || token.colorPrimaryActive);
     }, [token, color]);
-    return <div className="spinner" ref={spinner}>
-        <div className="double-bounce1"></div>
-        <div className="double-bounce2"></div>
+    return <div className={style.spinner} ref={spinner}>
+        <div className={style.doubleBounce1}></div>
+        <div className={style.doubleBounce1}></div>
     </div>
 }
