@@ -14,6 +14,16 @@ export default defineConfig({
         host: true,
         port: 16113,
         strictPort: true,
+        proxy: {
+            "/api": {
+                target: "http://localhost:8080",
+                changeOrigin: true,
+                rewrite: path => {
+                    console.log(path);
+                    return path;
+                }
+            },
+        }
     },
     base:"/bs-web/",
     build: {

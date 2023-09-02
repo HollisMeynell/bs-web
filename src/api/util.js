@@ -34,7 +34,7 @@ export function getUser() {
 }
 
 export const HttpRequest = axios.create({
-    baseURL: import.meta.env.DEV ? 'http://localhost:8080' : '',
+    // baseURL: import.meta.env.DEV ? 'http://localhost:8080' : '',
     timeout: 3000,
 });
 HttpRequest.interceptors.request.use((config) => {
@@ -62,9 +62,8 @@ HttpRequest.interceptors.response.use((rep) => {
         return backoff.then(() => {
             return axios(config);
         })
-    } else if (response.code === 401) { // 访问未授权的接口
-        console.log(response);
     }
+
     return Promise.reject(error);
 })
 const config = {
@@ -105,5 +104,5 @@ export async function uploadAllImage(files) {
 }
 
 export function getImageUrl(key) {
-    return `${import.meta.env.DEV ? "http://localhost:8080" : ""}/api/file/image/${key}`
+    return `/api/file/image/${key}`
 }

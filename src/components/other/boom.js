@@ -6,10 +6,8 @@ export default function clickBoomEffect() {
     let balls = [];
     let longPressed = false;
     let longPress;
-    let multiplier = 0;
+    let multiplier = 5;
     let width, height;
-    let origin;
-    let normal;
     let ctx;
     const colours = ["#F73859", "#14FFEC", "#00E0FF", "#FF99FE", "#FAF15D"];
     const canvas = document.createElement("canvas");
@@ -67,32 +65,21 @@ export default function clickBoomEffect() {
     function addEventListener() {
         ctx = canvas.getContext("2d");
         updateSize();
-        loop();
         alwaysBoom();
         window.addEventListener('resize', updateSize, false);
+        requestAnimationFrame(loop);
     }
 
 
 
     function updateSize() {
-        canvas.width = window.innerWidth * 2;
-        canvas.height = window.innerHeight * 2;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
         canvas.style.width = window.innerWidth + 'px';
         canvas.style.height = window.innerHeight + 'px';
-        ctx.scale(2, 2);
-        width = (canvas.width = window.innerWidth);
-        height = (canvas.height = window.innerHeight);
-        origin = {
-            x: width / 2,
-            y: height / 2
-        };
-        normal = {
-            x: width / 2,
-            y: height / 2
-        };
     }
     class Ball {
-        constructor(x = origin.x, y = origin.y) {
+        constructor(x, y) {
             this.x = x;
             this.y = y;
             this.angle = Math.PI * 2 * Math.random();
@@ -106,17 +93,16 @@ export default function clickBoomEffect() {
             this.r = randBetween(8, 12) + 3 * Math.random();
             this.color = colours[Math.floor(Math.random() * colours.length)];
         }
-        update() {
-            this.x += this.vx - normal.x;
-            this.y += this.vy - normal.y;
-            normal.x = -2 / window.innerWidth * Math.sin(this.angle);
-            normal.y = -2 / window.innerHeight * Math.cos(this.angle);
-            this.r -= 0.3;
-            this.vx *= 0.9;
-            this.vy *= 0.9;
+        update(override) {
+            this.x += this.vx * override;
+            this.y += this.vy * override;
+            this.r -= 0.3 * override;
+            this.vx *= Math.pow(0.9, override);
+            this.vy *= Math.pow(0.9, override);
         }
     }
-
+//  0.9 ^ 5
+//
     function pushBalls(count = 1, x = origin.x, y = origin.y) {
         for (let i = 0; i < count; i++) {
             balls.push(new Ball(x, y));
@@ -127,7 +113,9 @@ export default function clickBoomEffect() {
         return Math.floor(Math.random() * max) + min;
     }
 
-    function loop() {
+    let lastTimestamp = performance.now();
+    function loop(timestamp) {
+        const deltaTime = timestamp - lastTimestamp;
         ctx.fillStyle = "rgba(255, 255, 255, 0)";
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         for (let i = 0; i < balls.length; i++) {
@@ -137,7 +125,7 @@ export default function clickBoomEffect() {
             ctx.beginPath();
             ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2, false);
             ctx.fill();
-            b.update();
+            b.update(deltaTime / 16.7);
         }
         if (longPressed) {
             multiplier += 0.2;
@@ -145,6 +133,7 @@ export default function clickBoomEffect() {
             multiplier -= 0.4;
         }
         removeBall();
+        lastTimestamp = timestamp;
         requestAnimationFrame(loop);
     }
 

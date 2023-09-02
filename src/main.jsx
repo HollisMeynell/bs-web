@@ -42,7 +42,7 @@ function Main() {
     }
 
     useEffect(() => {
-        setTimeout(clickBoomEffect, 32 * 1000);
+        setTimeout(clickBoomEffect, 15);
         document.addEventListener("keydown", egg);
         return () => {
             document.removeEventListener("keydown", egg);

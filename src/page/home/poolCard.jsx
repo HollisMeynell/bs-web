@@ -1,5 +1,4 @@
 import {App, Card, Image} from "antd";
-import Editor from "../../components/markdown.jsx";
 import {EditOutlined, EllipsisOutlined, SettingOutlined} from "@ant-design/icons";
 import {useEffect, useLayoutEffect, useState} from "react";
 import {getPoolInfo} from "@/api/mapinfo.js";
@@ -19,16 +18,9 @@ export default function ({id, poolInfo = poolInfoTemp}) {
     const [info, setInfo] = useState(poolInfo);
     const {message, modal} = App.useApp();
 
-    useLayoutEffect(() => {
-        if (poolInfo.demo) {
-            setLoadingCard(true);
-        }
-
-        return ()=>{};
-    }, []);
-
     useEffect(() => {
         if (!poolInfo.demo) return;
+        setLoadingCard(true);
         if (typeof id !== "number") {
             message.error("type error");
             return;
@@ -41,7 +33,6 @@ export default function ({id, poolInfo = poolInfoTemp}) {
     }, []);
 
     function onInfo() {
-
     }
 
     return <div style={{width: '300px'}}>

@@ -1,13 +1,12 @@
 import {BulbOutlined, HighlightOutlined, SettingOutlined} from "@ant-design/icons";
 import {FloatButton, Popover, theme} from "antd";
 import {TwitterPicker} from "react-color";
-import {useNavigate, useParams} from "react-router";
+import {useParams} from "react-router";
 import {useDispatch} from "react-redux";
 import {changeDark, setColor} from "@/components/store/theme.js";
 
 
 export function Setter() {
-    const navigate = useNavigate();
     const dispatch = useDispatch()
     const {} = useParams();
     const {token} = theme.useToken();
