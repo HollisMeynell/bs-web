@@ -7,14 +7,26 @@ import {Router as devRouter} from '@/page/developer.jsx'
 import {Router as homeRouter} from '@/page/home.jsx'
 import {Router as bindRouter} from '@/page/bind.jsx'
 import {Router as userInfoRouter} from '@/page/userInfo.jsx'
+import {Router as OauthRouter} from '@/page/oauth.jsx'
 import store from "@/components/store.js";
 import {RouterProvider, createBrowserRouter} from "react-router-dom";
 import {Provider, useSelector} from "react-redux";
 import {egg} from "@/components/other/egg.js";
 import clickBoomEffect from "@/components/other/boom.js";
+import ErrorPage from "@/Err/error.jsx";
+import OsuUserCard from "@/components/card/osu-user-card.jsx";
+
+const test = {
+    path: '/test',
+    element: <>
+        <OsuUserCard uid={8664140}/>
+        <OsuUserCard uid={17064371}/>
+    </>,
+    errorElement: <ErrorPage/>,
+}
 
 const router = createBrowserRouter(
-    [indexRouter, homeRouter, devRouter, bindRouter, userInfoRouter],
+    [indexRouter, homeRouter, devRouter, bindRouter, userInfoRouter, OauthRouter, test],
     {
         basename: import.meta.env.BASE_URL || ""
     }

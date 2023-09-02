@@ -3,13 +3,13 @@ import '../style/App.css'
 import {Button, Card, Col, Layout, Row, theme} from "antd";
 import ErrorPage from "../Err/error.jsx";
 import {useNavigate} from "react-router";
-import {Setter} from "./components.jsx";
+import {Setter} from "../components/page-setter.jsx";
 import {LoginOutlined} from "@ant-design/icons";
 import imgCard1 from '../assets/card1.jpg';
 import imgCard2 from '../assets/card2.jpg';
 import imgCard3 from '../assets/card3.jpg';
 import {HttpRequest} from "../api/util.js";
-import {doLogin} from "@/assets/utils/login.js";
+import {doOauth} from "@/assets/utils/login.js";
 
 const {useToken} = theme;
 
@@ -26,7 +26,7 @@ function Index() {
     }
 
     function guestEnter() {
-        doLogin().then();
+        navigate('/oauth');
     }
 
     return <>
@@ -81,7 +81,6 @@ function LoginCard({title, text, enter, index}) {
             // cover={<img src={cover} alt={"cover"}/>}
         >
             <Card.Meta title={title} description={button}/>
-
         </Card>
     </Col>
 }

@@ -6,7 +6,7 @@ import {getPoolInfo} from "@/api/mapinfo.js";
 import {getImageUrl} from "@/api/util.js";
 
 const poolInfoTemp = {
-    demo:true,
+    demo: true,
     id: 0,
     banner: "",
     info: "",
@@ -14,7 +14,7 @@ const poolInfoTemp = {
     status: "",
 }
 
-export default function ({id, poolInfo = poolInfoTemp}){
+export default function ({id, poolInfo = poolInfoTemp}) {
     const [loadingCard, setLoadingCard] = useState(false);
     const [info, setInfo] = useState(poolInfo);
     const {message, modal} = App.useApp();
@@ -22,10 +22,11 @@ export default function ({id, poolInfo = poolInfoTemp}){
     useLayoutEffect(() => {
         if (poolInfo.demo) {
             setLoadingCard(true);
-            return;
         }
 
+        return ()=>{};
     }, []);
+
     useEffect(() => {
         if (!poolInfo.demo) return;
         if (typeof id !== "number") {
@@ -39,28 +40,32 @@ export default function ({id, poolInfo = poolInfoTemp}){
         });
     }, []);
 
+    function onInfo() {
 
+    }
 
-    return <div style={{width:'300px'}}>
+    return <div style={{width: '300px'}}>
         <Card
             loading={loadingCard}
             cover={<BannerImg url={getImageUrl(info.banner)} name={info.name}/>}
-            bodyStyle={{padding:0}}
+            bodyStyle={{padding: 0}}
             actions={[
                 <SettingOutlined key="setting"/>,
-                <EditOutlined key="edit" />,
-                <EllipsisOutlined key="ellipsis" />,
+                <EditOutlined key="edit"/>,
+                <EllipsisOutlined key="ellipsis" onClick={onInfo}/>,
             ]}
-        ></Card>
+        >
+
+        </Card>
     </div>
 }
 
-function BannerImg({url, name}){
+function BannerImg({url, name}) {
     const preview = {
-        visible:false,
+        visible: false,
         mask: name
     }
-    return<Image
+    return <Image
         src={url} alt={"banner"}
         preview={preview}
     />

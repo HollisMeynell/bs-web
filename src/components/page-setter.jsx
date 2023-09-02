@@ -3,7 +3,7 @@ import {FloatButton, Popover, theme} from "antd";
 import {TwitterPicker} from "react-color";
 import {useNavigate, useParams} from "react-router";
 import {useDispatch} from "react-redux";
-import {changeDark, setColor} from "../components/store/theme.js";
+import {changeDark, setColor} from "@/components/store/theme.js";
 
 
 export function Setter() {

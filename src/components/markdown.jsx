@@ -1,7 +1,6 @@
 import {useEffect, useLayoutEffect, useRef, useState} from "react";
 import {Input, Switch, theme} from 'antd'
-import '@/style/github-markdown.css'
-import "./markdown.css"
+import style from "@/style/markdown.module.scss"
 import {useSelector} from "react-redux";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -84,23 +83,23 @@ export default function Editor({
     const isDark = useSelector((state) => state.theme.value.dark);
     useEffect(() => {
         if (isDark) {
-            box.current.classList.add('markdown-dark');
-            box.current.classList.remove('markdown-light');
+            box.current.classList.add(style.markdownDark);
+            box.current.classList.remove(style.markdownLight);
         } else {
 
-            box.current.classList.add('markdown-light');
-            box.current.classList.remove('markdown-dark');
+            box.current.classList.add(style.markdownLight);
+            box.current.classList.remove(style.markdownDark);
         }
     }, [isDark]);
 
-    const style = {};
+    const boxStyle = {};
     if (maxWidth) {
-        style.maxWidth = maxWidth;
+        boxStyle.maxWidth = maxWidth;
     }
     if (maxHeight) {
-        style.maxHeight = maxHeight;
+        boxStyle.maxHeight = maxHeight;
     }
-    return <div className={"markdown-body"} ref={box} style={style}>
+    return <div className={style.markdownBody} ref={box} style={boxStyle}>
 
         {!!editText ?
             <Input.TextArea
@@ -116,7 +115,7 @@ export default function Editor({
             : <ReactMarkdown remarkPlugins={[remarkGfm, remarkMath, remarkFrontmatter]}
                              children={markdownReplaceImage(mdStr)}/>
         }
-        <div hidden={!allowControl} className={"markdown-controller"}>
+        <div hidden={!allowControl} className={style.markdownController}>
             <Switch checkedChildren="预览" unCheckedChildren="编辑" checked={!editText} onChange={handleShow}/>
         </div>
     </div>
