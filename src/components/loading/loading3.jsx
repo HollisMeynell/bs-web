@@ -9,18 +9,18 @@ export default function ({color}){
         spinner.current.style.setProperty('--color', color || token.colorPrimaryActive);
     }, [token, color]);
 
-    return <div className="sk-circle" ref={spinner}>
-        <div className="sk-circle1 sk-child"></div>
-        <div className="sk-circle2 sk-child"></div>
-        <div className="sk-circle3 sk-child"></div>
-        <div className="sk-circle4 sk-child"></div>
-        <div className="sk-circle5 sk-child"></div>
-        <div className="sk-circle6 sk-child"></div>
-        <div className="sk-circle7 sk-child"></div>
-        <div className="sk-circle8 sk-child"></div>
-        <div className="sk-circle9 sk-child"></div>
-        <div className="sk-circle10 sk-child"></div>
-        <div className="sk-circle11 sk-child"></div>
-        <div className="sk-circle12 sk-child"></div>
+    return <div className={style.skCircle} ref={spinner}>
+        <div className={style.skChild}></div>
+        <div className={`${style.skChild} ${style.skCircle2}`}></div>
+        <div className={`${style.skChild} ${style.skCircle3}`}></div>
+        <div className={`${style.skChild} ${style.skCircle4}`}></div>
+        <div className={`${style.skChild} ${style.skCircle5}`}></div>
+        <div className={`${style.skChild} ${style.skCircle6}`}></div>
+        <div className={`${style.skChild} ${style.skCircle7}`}></div>
+        <div className={`${style.skChild} ${style.skCircle8}`}></div>
+        <div className={`${style.skChild} ${style.skCircle9}`}></div>
+        <div className={`${style.skChild} ${style.skCircle10}`}></div>
+        <div className={`${style.skChild} ${style.skCircle11}`}></div>
+        <div className={`${style.skChild} ${style.skCircle12}`}></div>
     </div>
 }

@@ -5,7 +5,7 @@ import {Router as childRouter} from './child.jsx'
 import {Router as Favorites} from './home/favorites.jsx'
 import {Router as PoolEdit} from './home/poolEdit.jsx'
 import {Link} from "react-router-dom";
-import {Setter} from "./components.jsx";
+import {Setter} from "../components/page-setter.jsx";
 import {default as Index} from "./home/index.jsx";
 import {useEffect, useLayoutEffect, useRef, useState} from "react";
 import {
@@ -120,7 +120,7 @@ export default function Home() {
                         handleExit={handleExit}
                         handleReload={handleReload}/>
             </Layout.Header>
-            <Layout.Content style={{height: '100%'}}>
+            <Layout.Content style={{overflow: "auto", height: '100%'}}>
                 {/*主体容器*/}
                 {outlet || <Index/>}
                 <Setter/>

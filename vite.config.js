@@ -23,7 +23,7 @@ export default defineConfig({
         modules: {
             localsConvention: 'camelCase',
             scopeBehaviour: 'local',
-            generateScopedName: '[name]_[local]_[hash:5]',
+            generateScopedName: '[name]-[local]-[hash:5]',
         }
     },
 })
