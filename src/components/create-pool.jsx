@@ -5,6 +5,7 @@ import {uploadImage} from "../api/util.js";
 import {createPool} from "../api/mapinfo.js";
 import Editor from "@/components/markdown.jsx";
 import {tipsStyle} from "@/components/js-style.js";
+import {PoolApi} from "@/api/pool-api.js";
 
 export default function ({children}) {
     const {message} = App.useApp();
@@ -95,7 +96,7 @@ export default function ({children}) {
         })
         try {
             const {fileKey} = await uploadImage(insertData.banner, "banner.png");
-            res = await createPool({
+            res = await PoolApi.createPool({
                 name: insertData.name,
                 info: insertData.info,
                 banner: fileKey,
