@@ -1,6 +1,6 @@
 import ErrorPage from "../../Err/error.jsx";
 import {Button, Space} from "antd";
-import './favorites.css';
+import '@/style/home/favorites.css';
 import FilterCard from "@/components/card/filter-card.jsx";
 import {useRef} from "react";
 import {dom2image} from "@/assets/utils/dom-to-image.js";

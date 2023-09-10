@@ -7,6 +7,7 @@ import {Router as devRouter} from '@/page/developer.jsx'
 import {Router as homeRouter} from '@/page/home.jsx'
 import {Router as bindRouter} from '@/page/bind.jsx'
 import {Router as userInfoRouter} from '@/page/userInfo.jsx'
+import {Router as LoginRouter} from '@/page/login.jsx'
 import {Router as OauthRouter} from '@/page/oauth.jsx'
 import store from "@/components/store.js";
 import {RouterProvider, createBrowserRouter} from "react-router-dom";
@@ -26,7 +27,7 @@ const test = {
 }
 
 const router = createBrowserRouter(
-    [indexRouter, homeRouter, devRouter, bindRouter, userInfoRouter, OauthRouter, test],
+    [indexRouter, homeRouter, devRouter, bindRouter, userInfoRouter, OauthRouter, LoginRouter, test],
     {
         basename: import.meta.env.BASE_URL || ""
     }
@@ -54,11 +55,9 @@ function Main() {
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-    // <React.StrictMode>
     <App style={{height: '100%', overflow: "hidden"}}>
         <Provider store={store}>
             <Main/>
         </Provider>
     </App>
-    // </React.StrictMode>
 )

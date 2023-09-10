@@ -1,7 +1,7 @@
 import {App, Card, Image} from "antd";
 import {EditOutlined, EllipsisOutlined, SettingOutlined} from "@ant-design/icons";
 import {useEffect, useLayoutEffect, useState} from "react";
-import {getPoolInfo} from "@/api/mapinfo.js";
+import {PoolApi} from "@/api/pool-api.js";
 import {getImageUrl} from "@/api/util.js";
 
 const poolInfoTemp = {
@@ -26,7 +26,7 @@ export default function ({id, poolInfo = poolInfoTemp}) {
             return;
         }
 
-        getPoolInfo({poolId: id}).then(res => {
+        PoolApi.getPoolInfo({poolId: id}).then(res => {
             setInfo(res.data[0]);
             setLoadingCard(false);
         });

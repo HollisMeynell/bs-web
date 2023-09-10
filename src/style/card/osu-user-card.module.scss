@@ -35,7 +35,13 @@ body {
   position: relative;
   overflow: hidden;
 
-
+  .loading{
+    transform: scale(0.8);
+    > div {
+      margin: 40px auto;
+    }
+    backdrop-filter: blur(6px);
+  }
   .background-container {
     position: absolute;
     left: 0;
@@ -168,6 +174,10 @@ body {
           }
         }
       }
+      span {
+        line-height: 17.5px;
+        height: 17.5px;
+      }
     }
   }
 
@@ -176,11 +186,6 @@ body {
     white-space: nowrap !important;
     text-overflow: ellipsis !important;
     overflow: hidden !important;
-  }
-
-  span {
-    line-height: 17.5px;
-    height: 17.5px;
   }
 
   a[art=pre-overflow] {

@@ -1,5 +1,5 @@
-import {useState} from 'react'
-import '../style/App.css'
+import {useEffect, useRef, useState} from 'react'
+import style from '@/style/home/home-index.module.scss'
 import {Button, Card, Col, Layout, Row, theme} from "antd";
 import ErrorPage from "../Err/error.jsx";
 import {useNavigate} from "react-router";
@@ -8,10 +8,51 @@ import {LoginOutlined} from "@ant-design/icons";
 import imgCard1 from '../assets/card1.jpg';
 import imgCard2 from '../assets/card2.jpg';
 import imgCard3 from '../assets/card3.jpg';
-import {HttpRequest} from "../api/util.js";
-import {doOauth} from "@/assets/utils/login.js";
 
 const {useToken} = theme;
+
+export const Router = {
+    path: '/',
+    element: <IndexA/>,
+    errorElement: <ErrorPage/>,
+}
+
+function IndexA() {
+    const mainBox = useRef(void 0);
+    const {token} = useToken();
+    useEffect(() => {
+        mainBox.current.style.setProperty('--main-color', token.colorPrimaryBg);
+        mainBox.current.style.backgroundImage = `url(${imgCard2})`;
+    }, [token.colorPrimaryBg]);
+    const navigate = useNavigate();
+
+    function userEnter() {
+
+        navigate('/home');
+    }
+
+    function developerEnter() {
+        navigate('/dev');
+    }
+
+    function guestEnter() {
+        navigate('/test');
+    }
+
+    return <div ref={mainBox} className={style.main}>
+        <div className={style.box}>
+            <div className={style.title}>
+                No name yet.
+            </div>
+            <span className={style.info}>一个关于OSU的比赛管理网站</span>
+            <div className={style.bottom}>
+                <Button size="large" shape="round" type="primary" onClick={userEnter}>进入主页</Button>
+                <Button size="large" shape="round" ghost onClick={guestEnter}>公开信息</Button>
+            </div>
+        </div>
+        <Setter/>
+    </div>
+}
 
 function Index() {
     const navigate = useNavigate();
@@ -41,12 +82,6 @@ function Index() {
             </Layout.Content>
         </Layout>
     </>
-}
-
-export const Router = {
-    path: '/',
-    element: <Index/>,
-    errorElement: <ErrorPage/>,
 }
 
 function LoginCard({title, text, enter, index}) {
