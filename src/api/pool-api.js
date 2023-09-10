@@ -65,8 +65,8 @@ const CREATE_GROUP = {
 const ADD_USER = {
 
 }
-function addUser(data = ){
-
+async function addUser(data = ADD_USER){
+    await HttpRequest.put("");
 }
 
 export const PoolApi = {
@@ -77,9 +77,4 @@ export const PoolApi = {
     getPoolInfo,
     queryPoolInfo,
     createPool,
-}
-
-
-function createGroup(data) {
-    return await HttpRequest.put("/api/pool/", data);
 }

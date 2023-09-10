@@ -63,6 +63,9 @@ HttpRequest.interceptors.response.use((rep) => {
             return axios(config);
         })
     }
+    if (response.status === 401 && response.statusText === "Unauthorized") {
+        window.location.replace("/login");
+    }
 
     return Promise.reject(error);
 })

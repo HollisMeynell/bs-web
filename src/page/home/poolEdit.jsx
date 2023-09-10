@@ -1,8 +1,8 @@
 import {useEffect, useRef, useState} from "react";
 import {Button, Card, Col, Table, Tag} from "antd";
-import './poolEdit.css'
+import '@/style/home/poolEdit.css'
 import CreatePool from "../../components/create-pool.jsx";
-import {queryPoolInfo} from "@/api/mapinfo.js";
+import {PoolApi} from "@/api/pool-api.js";
 import {getImageUrl} from "@/api/util.js";
 import ErrorPage from "@/Err/error.jsx";
 
@@ -77,7 +77,7 @@ export default function PoolEdit({setLoading}) {
         if (typeof setLoading === "function") {
             setLoading(false);
         }
-        queryPoolInfo().then(e => {
+        PoolApi.queryPoolInfo().then(e => {
             console.log(e);
         })
     }, []);

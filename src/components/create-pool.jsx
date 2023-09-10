@@ -1,8 +1,7 @@
 import {Modal, Col, Row, Input, App} from "antd";
 import {useReducer, useState} from "react";
 import ImageCropper from "./image-cropper.jsx";
-import {uploadImage} from "../api/util.js";
-import {createPool} from "../api/mapinfo.js";
+import {uploadImage} from "@/api/util.js";
 import Editor from "@/components/markdown.jsx";
 import {tipsStyle} from "@/components/js-style.js";
 import {PoolApi} from "@/api/pool-api.js";

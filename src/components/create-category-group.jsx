@@ -4,7 +4,7 @@ import {tipsStyle} from "@/components/js-style.js";
 import Editor from "@/components/markdown.jsx";
 import {hexColor2i32} from "@/assets/utils/color-util.js";
 import {SketchPicker} from "react-color";
-import {createCategoryGroup} from "@/api/mapinfo.js";
+import {CategoryGroupApi} from "@/api/pool-group-api.js";
 
 
 export default function ({children, poolId}) {
@@ -117,7 +117,7 @@ export default function ({children, poolId}) {
             content: "加载中"
         })
         try {
-            res = await createCategoryGroup({
+            res = await CategoryGroupApi.createGroup({
                 name: insertData.name,
                 poolId: poolId,
                 info: insertData.info,
