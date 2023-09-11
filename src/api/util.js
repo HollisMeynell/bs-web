@@ -1,4 +1,5 @@
 import axios from "axios";
+import {setBefErrPath} from "@/assets/utils/util.js";
 
 const TimeoutMax = 30000
 const TimeoutStep = 2000
@@ -34,7 +35,6 @@ export function getUser() {
 }
 
 export const HttpRequest = axios.create({
-    // baseURL: import.meta.env.DEV ? 'http://localhost:8080' : '',
     timeout: 3000,
 });
 HttpRequest.interceptors.request.use((config) => {
@@ -64,6 +64,7 @@ HttpRequest.interceptors.response.use((rep) => {
         })
     }
     if (response.status === 401 && response.statusText === "Unauthorized") {
+        setBefErrPath( window.location.pathname);
         window.location.replace("/login");
     }
 

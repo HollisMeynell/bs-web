@@ -15,6 +15,7 @@
     "animejs": "^3.2.1",
     "antd": "^5.4.7",
     "axios": "^1.4.0",
+    "blueimp-md5": "^2.19.0",
     "buffer": "^6.0.3",
     "react": "^18.2.0",
     "react-color": "^2.19.3",
@@ -28,7 +29,8 @@
     "remark-frontmatter": "^4.0.1",
     "remark-gfm": "^3.0.1",
     "remark-math": "^5.1.1",
-    "sass": "^1.66.1"
+    "sass": "^1.66.1",
+    "typeit": "^8.7.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.24",

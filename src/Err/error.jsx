@@ -1,5 +1,7 @@
 import {useNavigate, useRouteError} from "react-router";
 import {Button, Result} from "antd";
+import {useEffect, useRef} from "react";
+import TypeIt from "typeit";
 
 
 
@@ -9,15 +11,30 @@ export default function ErrorPage(){
     if (error.code === 401) {
         return noLoginError();
     }
+    const infoRef = useRef(null);
+    const info = error.statusText || error.message;
     const navigate = useNavigate();
     function toHome(){
         navigate('/');
     }
 
+    useEffect(() => {
+        function addTyped() {
+            if (!infoRef.current) {
+                setTimeout(addTyped, 50);
+                return
+            }
+            new TypeIt(infoRef.current, {speed: 40})
+                .type(info)
+                .go();
+        }
+        addTyped();
+    }, []);
+
     return <Result
         status="error"
-        title="出错了!"
-        subTitle={error.statusText || error.message}
+        title={<span style={{color:"white"}}>出错了!</span>}
+        subTitle={<span style={{color: "white"}} ref={infoRef}/>}
         extra={<Button type="primary" onClick={toHome}>返回主页</Button>}
         />
 }

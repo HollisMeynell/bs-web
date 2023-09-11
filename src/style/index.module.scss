@@ -15,7 +15,7 @@ $bg-color: var(--main-color);
 
   .box {
     width: 48rem;
-    height: 23rem;
+    height: 22rem;
     min-height: 22.5rem;
     display: flex;
     flex-direction: column;
@@ -45,7 +45,7 @@ $bg-color: var(--main-color);
 
 
   .title {
-    margin-top: 6rem;
+    margin-top: 4.5rem;
     font-size: 46px;
     position: relative;
     padding-top: 1rem;
@@ -68,7 +68,7 @@ $bg-color: var(--main-color);
   }
 
   .bottom {
-    margin-top: 30px;
+    margin-top: 1.5rem;
 
     height: 90px;
     display: flex;
