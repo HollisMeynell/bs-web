@@ -1,47 +1,51 @@
 import {useEffect, useRef, useState} from "react";
-import {Button, Card, Col, Table, Tag} from "antd";
+import {Button, Card, Col, Space, Table, Tag} from "antd";
 import '@/style/home/poolEdit.css'
 import CreatePool from "../../components/create-pool.jsx";
 import {PoolApi} from "@/api/pool-api.js";
-import {getImageUrl} from "@/api/util.js";
+import {getImageUrl, getUser, HttpRequest} from "@/api/util.js";
 import ErrorPage from "@/Err/error.jsx";
+import {useLoaderData, useNavigate} from "react-router";
+import {BarsOutlined, MinusCircleOutlined, PlusCircleOutlined, PlusOutlined} from "@ant-design/icons";
+import {useDispatch} from "react-redux";
+import {deleteMarkList, insertMarkList} from "@/components/store/pool.js";
 
 export const Router = {
     path: "manege",
+    loader: loader,
     element: <PoolEdit/>,
     errorElement: <ErrorPage/>
 }
 
-const columns = [
-    {
-        title: "NAME",
-        dataIndex: 'name',
-        key: 'name',
-    },
-    {
-        title: 'BANNER',
-        dataIndex: 'banner',
-        key: 'banner',
-        render: (key) => <img width={86} height={40} src={getImageUrl(key)} alt={"banner"}/>
-    },
-    {
-        title: 'STATUS',
-        dataIndex: 'status',
-        key: 'status',
-        render: (status) => {
-            return getStatusTag(status);
-        }
-    },
-]
+async function loader({params}) {
+
+    let req = await PoolApi.queryPoolInfo();
+    const mark = await PoolApi.getMarkPool();
+    const user = getUser();
+    const markData = {};
+    for (const m of mark.data) {
+        markData[m.id] = m;
+    }
+    for (const pool of req.data) {
+        pool.permission = pool.users.find(value => {
+            if (value.userId === user.uid) return true;
+        }).permission;
+        pool.isMark = markData[pool.id] !== void 0;
+    }
+    console.log(req.data)
+    return {
+        listData: [...req.data]
+    }
+}
 
 function getStatusTag(s) {
     switch (s) {
         case "OPEN":
-            return <Tag bordered={false} color={"processing"}>选图</Tag>
+            return <Tag bordered={false} color={"processing"}>选图中</Tag>
         case "SHOW":
-            return <Tag bordered={false} color={"success"}>公开</Tag>
+            return <Tag bordered={false} color={"success"}>公开中</Tag>
         case "STOP":
-            return <Tag bordered={false} color={"error"}>截至</Tag>
+            return <Tag bordered={false} color={"error"}>已结束</Tag>
         case "DELETE":
             return <Tag bordered={false} color={"#333"}>已删除</Tag>
         default:
@@ -49,41 +53,77 @@ function getStatusTag(s) {
     }
 }
 
-const fakeValue = [
-    {
-        status:"OPEN",
-        banner: "ffff14e4-7259-46ff-a05b-d6f551857dc1",
-    },
-    {
-        status:"SHOW",
-        banner: "ffff14e4-7259-46ff-a05b-d6f551857dc1",
-    },
-    {
-        status:"STOP",
-        banner: "ffff14e4-7259-46ff-a05b-d6f551857dc1",
-    },
-    {
-        status:"DELETE",
-        banner: "ffff14e4-7259-46ff-a05b-d6f551857dc1",
-    },
-    {
-        status:"E",
-        banner: "ffff14e4-7259-46ff-a05b-d6f551857dc1",
-    },
-]
+function PoolEdit() {
+    const {listData} = useLoaderData();
+    const [list, setList] = useState(listData);
+    const navigate = useNavigate();
+    const setPool = useDispatch();
 
-export default function PoolEdit({setLoading}) {
-    useEffect(() => {
-        if (typeof setLoading === "function") {
-            setLoading(false);
+    const columns = [
+        {
+            title: "NAME",
+            dataIndex: 'name',
+            key: 'name',
+        },
+        {
+            title: 'BANNER',
+            dataIndex: 'banner',
+            key: 'banner',
+            render: (key) => <img width={86} height={40} src={getImageUrl(key)} alt={"banner"}/>
+        },
+        {
+            title: 'STATUS',
+            dataIndex: 'status',
+            key: 'status',
+            render: (status) => {
+                return getStatusTag(status);
+            }
+        },
+        {
+            title: 'ACTION',
+            key: 'action',
+            render: (_, value) => {
+                return <Space size={'middle'}>
+                    {value.isMark ?
+                        <MinusCircleOutlined onClick={() => delMark(value.id)}/>
+                        :
+                        <PlusCircleOutlined onClick={() => addMark(value.id, value)}/>
+                    }
+                    <BarsOutlined onClick={() => navigate(`/home/mappool/${value.id}`)}/>
+                </Space>
+            }
         }
-        PoolApi.queryPoolInfo().then(e => {
-            console.log(e);
-        })
-    }, []);
+    ]
+
+    async function addMark(id, pool) {
+        const rep = await PoolApi.addMarkPool(id);
+        if (rep.code !== 200) return;
+        let l = [];
+        for (let lElement of list) {
+            if (lElement.id === id)
+                lElement.isMark = true;
+            l.push(lElement);
+        }
+        setPool(insertMarkList(pool));
+        setList(l);
+    }
+
+    async function delMark(id) {
+        const rep = await PoolApi.deleteMarkPool(id);
+        console.log(rep)
+        if (rep.code !== 200) return;
+        let l = [];
+        for (let lElement of l) {
+            if (lElement.id === id)
+                lElement.isMark = false;
+            l.push(lElement);
+        }
+        setPool(deleteMarkList(id));
+        setList(l);
+    }
 
     return <>
-        <Table columns={columns} dataSource={fakeValue} size={"small"} pagination={false}/>
+        <Table columns={columns} dataSource={list} size={"small"} pagination={false}/>
         <CreatePool>
             <Button>create pool map X</Button>
         </CreatePool>

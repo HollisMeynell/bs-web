@@ -8,14 +8,15 @@ import TypeIt from "typeit";
 export default function ErrorPage(){
     const error = useRouteError();
     console.error(error);
-    if (error.code === 401) {
-        return noLoginError();
-    }
     const infoRef = useRef(null);
     const info = error.statusText || error.message;
     const navigate = useNavigate();
     function toHome(){
         navigate('/');
+    }
+
+    function toBack(){
+        window.history.go(-1);
     }
 
     useEffect(() => {
@@ -24,37 +25,22 @@ export default function ErrorPage(){
                 setTimeout(addTyped, 50);
                 return
             }
-            new TypeIt(infoRef.current, {speed: 40})
+            new TypeIt(infoRef.current, {speed: 40,cursorChar: "",})
                 .type(info)
                 .go();
         }
         addTyped();
     }, []);
 
-    return <Result
-        status="error"
-        title={<span style={{color:"white"}}>出错了!</span>}
-        subTitle={<span style={{color: "white"}} ref={infoRef}/>}
-        extra={<Button type="primary" onClick={toHome}>返回主页</Button>}
+    return <div style={{width:'100%', height:'100%', background:'hsl(255, 10%, 20%)'}}>
+        <Result
+            status="error"
+            title={<span style={{color:"white"}}>出错了!</span>}
+            subTitle={<span style={{color: "white"}} ref={infoRef}/>}
+            extra={<>
+                <Button type="primary" onClick={toHome}>主页</Button>
+                <Button type="primary" onClick={toBack}>返回</Button>
+            </>}
         />
+    </div>
 }
-
-function noLoginError() {
-    const navigate = useNavigate();
-    function toLogin(){
-        navigate('/oauth');
-    }
-    function toHome(){
-        navigate('/');
-    }
-    return <Result
-        status="warning"
-        title="禁止访问"
-        subTitle="此页面访问需要权限 . . . . . ."
-        extra={<>
-            <Button type="primary" onClick={toHome}>返回主页</Button>
-            <Button type="primary" onClick={toLogin}>登录</Button>
-        </>}
-    />
-}
-
