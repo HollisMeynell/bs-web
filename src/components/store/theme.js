@@ -19,7 +19,7 @@ function saveTheme(t) {
     }
 }
 
-export const themeSlice = createSlice({
+const themeSlice = createSlice({
     name: 'theme',
     initialState: {
         value: getDefaultTheme(),
