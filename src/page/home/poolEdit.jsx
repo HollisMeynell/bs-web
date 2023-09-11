@@ -113,7 +113,7 @@ function PoolEdit() {
         console.log(rep)
         if (rep.code !== 200) return;
         let l = [];
-        for (let lElement of l) {
+        for (let lElement of list) {
             if (lElement.id === id)
                 lElement.isMark = false;
             l.push(lElement);
