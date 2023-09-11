@@ -1,4 +1,13 @@
-
+export function setBefErrPath(path) {
+    window.localStorage.setItem("BEF_PATH", path);
+}
+export function getBefErrPath() {
+    const data = window.localStorage.getItem("BEF_PATH")
+    if (data) {
+        window.localStorage.removeItem("BEF_PATH")
+    }
+    return data;
+}
 export async function sleep(time) {
     await new Promise((resolve) => {
         setTimeout(() => {

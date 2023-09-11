@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react'
 import ReactDOM from 'react-dom/client'
-import '@/style/index.css'
+import '@/style/main.css'
 import {App, ConfigProvider, theme} from "antd";
 import {Router as indexRouter} from '@/page/index.jsx'
 import {Router as devRouter} from '@/page/developer.jsx'

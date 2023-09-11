@@ -4,6 +4,7 @@ import Loading from "../components/loading/loading.jsx";
 import {useEffect, useState} from "react";
 import {doLogin} from "../api/userinfo.js";
 import {useNavigate} from "react-router";
+import {getBefErrPath} from "@/assets/utils/util.js";
 
 export const Router = {
     path: '/bind',
@@ -23,21 +24,26 @@ function BindPage() {
         if (start >= end) {
             message.error("出错了: [code is null]", 10)
                 .then(() => {
-                    navigate('/');
+                    window.history.go(-1);
                 });
             return;
         }
         const code = arg.substring(start, end);
         doLogin(code).then(() => {
-            message.success("登陆成功!", 3)
+            message.success("登陆成功!", 1)
                 .then(() => {
-                navigate('/');
-            });
+                    const path = getBefErrPath();
+                    if (path) {
+                        navigate(path);
+                    } else {
+                        window.history.go(-2);
+                    }
+                });
         }).catch((err) => {
             message.error(err.message, 10)
                 .then(() => {
-                navigate('/');
-            });
+                    navigate('/');
+                });
         });
     }
 
