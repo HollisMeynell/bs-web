@@ -1,6 +1,6 @@
-import {App, Card, Image} from "antd";
+import {Card, Image} from "antd";
 import {EditOutlined, EllipsisOutlined, SettingOutlined} from "@ant-design/icons";
-import {useEffect, useLayoutEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {PoolApi} from "@/api/pool-api.js";
 import {getImageUrl} from "@/api/util.js";
 
@@ -16,13 +16,17 @@ const poolInfoTemp = {
 export default function ({id, poolInfo = poolInfoTemp}) {
     const [loadingCard, setLoadingCard] = useState(false);
     const [info, setInfo] = useState(poolInfo);
-    const {message, modal} = App.useApp();
 
     useEffect(() => {
         if (!poolInfo.demo) return;
         setLoadingCard(true);
         if (typeof id !== "number") {
-            message.error("type error");
+            outMessage({
+                key: 'pool-error',
+                type: "error",
+                content: "type error",
+                duration: 3
+            })
             return;
         }
 

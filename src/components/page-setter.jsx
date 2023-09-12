@@ -7,7 +7,7 @@ import {changeDark, setColor} from "@/components/store/theme.js";
 
 
 export function Setter() {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
     const {} = useParams();
     const {token} = theme.useToken();
 

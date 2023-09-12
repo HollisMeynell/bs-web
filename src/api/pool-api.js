@@ -77,4 +77,6 @@ export const PoolApi = {
     getPoolInfo,
     queryPoolInfo,
     createPool,
+    updatePool,
+    deletePool,
 }

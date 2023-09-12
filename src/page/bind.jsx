@@ -8,7 +8,7 @@ import {getBefErrPath} from "@/assets/utils/util.js";
 
 export const Router = {
     path: '/bind',
-    element: <BindPage/>,
+    Component: BindPage,
     errorElement: <ErrorPage/>,
 }
 
