@@ -5,13 +5,15 @@ import FilterCard from "@/components/card/filter-card.jsx";
 import {useRef} from "react";
 import {dom2image} from "@/assets/utils/dom-to-image.js";
 import {downloadFile, saveFile, writeImageToClipboard} from "@/assets/utils/file-util.js";
+import {useDispatch} from "react-redux";
 
 export const Router = {
     path: 'favorites', element: <Favorites/>, errorElement: <ErrorPage/>
 }
 
-export default function Favorites() {
+function Favorites(){
     const filterR = useRef(null);
+    const dispatch = useDispatch();
 
     async function copy() {
         const node = filterR.current;
@@ -37,11 +39,15 @@ export default function Favorites() {
         downloadFile(image, "paint.png");
     }
 
+    function handleChange(v) {
+
+    }
+
     return <>
         <div style={{margin: '10px 10px'}}>
             <Space size={[10, 10]} align="start" wrap>
                 <div ref={filterR}>
-                    <FilterCard/>
+                    <FilterCard onChange={handleChange}/>
                 </div>
                 <Button onClick={copy}>{"<-"}复制到剪切板</Button>
                 <Button onClick={download}>下载文件</Button>

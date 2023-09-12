@@ -4,6 +4,7 @@ import {Avatar, Breadcrumb, Card, Divider,Layout, Menu, Popover, theme} from "an
 import {Router as childRouter} from './child.jsx'
 import {Router as Favorites} from './home/favorites.jsx'
 import {Router as PoolEdit} from './home/poolEdit.jsx'
+import {Router as PoolRouter} from './home/mappool/index.jsx'
 import {Link} from "react-router-dom";
 import {Setter} from "@/components/page-setter.jsx";
 import {default as Index} from "./home/index.jsx";
@@ -24,10 +25,10 @@ import {initMarkList} from "@/components/store/pool.js";
 
 export const Router = {
     path: '/home',
-    element: <Home/>,
+    Component: Home,
     loader: loader,
     errorElement: <ErrorPage/>,
-    children: [childRouter, Favorites, PoolEdit, {path: 'mappool/:mid', element: <div children={"3"}/>}]
+    children: [childRouter, Favorites, PoolEdit, PoolRouter, ]
 }
 
 async function loader(){
@@ -44,7 +45,6 @@ function parseMark(list) {
 }
 
 function Home() {
-    const {route, mid} = useParams();
     const {token} = theme.useToken();
     const {marks} = useLoaderData();
     const markPool = useSelector(state => state.pool.markList)

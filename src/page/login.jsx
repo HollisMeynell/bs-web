@@ -7,12 +7,11 @@ import {hiddenStyle, showHiddenStyle} from "@/components/js-style.js";
 
 export const Router = {
     path: '/login',
-    element: <Login/>,
+    Component: Login,
     errorElement: <ErrorPage/>
 }
 
 function Login() {
-    const [loading, setLoading] = useState(false);
     async function doLogin(){
         await doOauth();
     }

@@ -1,4 +1,4 @@
-import {Modal, Col, Row, Input, App} from "antd";
+import {Modal, Col, Row, Input} from "antd";
 import {useReducer, useState} from "react";
 import ImageCropper from "./image-cropper.jsx";
 import {uploadImage} from "@/api/util.js";
@@ -7,7 +7,6 @@ import {tipsStyle} from "@/components/js-style.js";
 import {PoolApi} from "@/api/pool-api.js";
 
 export default function ({children}) {
-    const {message} = App.useApp();
 
     const [insertStatus, setInsertStatus] = useState({
         name: null,
@@ -88,7 +87,7 @@ export default function ({children}) {
         }
         const key = "tip";
         let res;
-        message.open({
+        outMessage({
             key,
             type: "loading",
             content: "加载中"
@@ -101,16 +100,16 @@ export default function ({children}) {
                 banner: fileKey,
             });
         } catch (e) {
-            message.open({
+            outMessage({
                 key,
                 type: "error",
                 content: `创建失败: ${e.message}`,
-                duration: 3
+                duration: 10
             });
             return false;
         }
         if (res.code === 200) {
-            message.open({
+            outMessage({
                 key,
                 type: "success",
                 content: '创建完成',
@@ -118,11 +117,11 @@ export default function ({children}) {
             });
             return true;
         } else {
-            message.open({
+            outMessage({
                 key,
                 type: "error",
                 content: `创建失败: ${res.message}`,
-                duration: 3
+                duration: 10
             });
         }
 

@@ -11,11 +11,12 @@ import {Router as LoginRouter} from '@/page/login.jsx'
 import {Router as OauthRouter} from '@/page/oauth.jsx'
 import store from "@/components/store.js";
 import {RouterProvider, createBrowserRouter} from "react-router-dom";
-import {Provider, useSelector} from "react-redux";
+import {Provider, useDispatch, useSelector} from "react-redux";
 import {egg} from "@/components/other/egg.js";
 import clickBoomEffect from "@/components/other/boom.js";
 import ErrorPage from "@/Err/error.jsx";
 import OsuUserCard from "@/components/card/osu-user-card.jsx";
+import {delMessage, delMessageDone, popMessage, putMessage} from "@/components/store/show.js";
 
 const test = {
     path: '/test',
@@ -42,13 +43,43 @@ function Main() {
         themeConf.algorithm = theme.darkAlgorithm;
     }
 
+    const messageShow = useSelector(state => state.show.message);
+    const messageDelKey = useSelector(state => state.show.delMessageKey);
+    const dispatch = useDispatch();
+
+    const {message} = App.useApp();
+
     useEffect(() => {
         setTimeout(clickBoomEffect, 15);
         document.addEventListener("keydown", egg);
+
+        window.outMessage = value => dispatch(putMessage(value));
+        window.outMessageCancel = key => dispatch(delMessage(key));
+
         return () => {
             document.removeEventListener("keydown", egg);
+            window.outMessage = void 0;
+            window.outMessageCancel = void 0;
         }
     }, []);
+
+    useEffect(() => {
+        if (messageShow?.key) {
+            const config = {
+                ...messageShow
+            };
+            message.open(config);
+            dispatch(popMessage());
+        }
+    }, [messageShow]);
+
+    useEffect(() => {
+        if (messageDelKey) {
+            message.destroy(messageDelKey);
+            dispatch(delMessageDone());
+        }
+    }, [messageDelKey]);
+
     return <ConfigProvider theme={themeConf}>
         <RouterProvider router={router}/>
     </ConfigProvider>

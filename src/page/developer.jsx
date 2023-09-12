@@ -1,13 +1,12 @@
 import ErrorPage from "../Err/error.jsx";
 import {Input, Layout, Select, Space, theme} from "antd";
 import {useEffect, useRef, useState} from "react";
-import swatch from "react-color/lib/components/common/Swatch.js";
 import {useNavigate} from "react-router";
 import {HttpRequest} from "../api/util.js";
 
 export const Router = {
     path: '/dev',
-    element: <Developer/>,
+    Component: Developer,
     errorElement: <ErrorPage/>,
 }
 

@@ -3,11 +3,11 @@ import {useParams} from "react-router";
 
 export const Router = {
     path: ':route',
-    element: <Box/>,
+    Component: Box,
     errorElement: <ErrorPage/>,
 }
 
-export default function Box(){
+function Box(){
     const {route} = useParams();
-    return <div>{route}</div>
+    return <div>home - {route}</div>
 }

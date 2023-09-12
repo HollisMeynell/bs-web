@@ -1,4 +1,4 @@
-import {App, Button, Card, Col, Input, Modal, Popover, Row} from "antd";
+import {Button, Card, Col, Input, Modal, Popover, Row} from "antd";
 import {useReducer, useState} from "react";
 import {tipsStyle} from "@/components/js-style.js";
 import Editor from "@/components/markdown.jsx";
@@ -19,7 +19,6 @@ export default function ({children, poolId}) {
     }
     const [modalOpen, setModalOpen] = useState(false);
     const [modalOkButton, setModalOkButton] = useState(false);
-    const {message} = App.useApp();
     const statusReduce = (state, action) => {
         switch (action.type) {
             case "name" :
@@ -109,12 +108,13 @@ export default function ({children, poolId}) {
             return false;
         }
 
-        const key = "tip";
+        const key = "create-group-tip";
         let res;
-        message.open({
+        outMessage({
             key,
             type: "loading",
-            content: "加载中"
+            content: "加载中",
+            duration: 0,
         })
         try {
             res = await CategoryGroupApi.createGroup({
@@ -124,17 +124,17 @@ export default function ({children, poolId}) {
                 color: hexColor2i32(insertData.color),
             });
         } catch (e) {
-            message.open({
+            outMessage({
                 key,
                 type:"error",
                 content:`创建失败: ${e.message}`,
-                duration: 3,
+                duration: 10,
             })
             return false;
         }
 
         if (res.code === 200) {
-            message.open({
+            outMessage({
                 key,
                 type: "success",
                 content: '创建完成',
@@ -142,11 +142,11 @@ export default function ({children, poolId}) {
             });
             return true;
         } else {
-            message.open({
+            outMessage({
                 key,
                 type: "error",
                 content: `创建失败: ${res.message}`,
-                duration: 3
+                duration: 10
             });
         }
 

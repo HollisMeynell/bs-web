@@ -6,7 +6,7 @@ import {PoolApi} from "@/api/pool-api.js";
 import {getImageUrl, getUser, HttpRequest} from "@/api/util.js";
 import ErrorPage from "@/Err/error.jsx";
 import {useLoaderData, useNavigate} from "react-router";
-import {BarsOutlined, MinusCircleOutlined, PlusCircleOutlined, PlusOutlined} from "@ant-design/icons";
+import {BarsOutlined, DeleteOutlined, MinusCircleOutlined, PlusCircleOutlined, PlusOutlined} from "@ant-design/icons";
 import {useDispatch} from "react-redux";
 import {deleteMarkList, insertMarkList} from "@/components/store/pool.js";
 
@@ -84,41 +84,59 @@ function PoolEdit() {
             key: 'action',
             render: (_, value) => {
                 return <Space size={'middle'}>
-                    {value.isMark ?
-                        <MinusCircleOutlined onClick={() => delMark(value.id)}/>
-                        :
-                        <PlusCircleOutlined onClick={() => addMark(value.id, value)}/>
+                    {
+                        value.isMark ?
+                            <MinusCircleOutlined onClick={() => delMark(value.id)}/>
+                            :
+                            <PlusCircleOutlined onClick={() => addMark(value.id, value)}/>
                     }
                     <BarsOutlined onClick={() => navigate(`/home/mappool/${value.id}`)}/>
+                    {
+                        value.permission === "CREATE" && <DeleteOutlined onClick={() => delPool(value)}/>
+                    }
                 </Space>
             }
         }
     ]
 
     async function addMark(id, pool) {
+
         const rep = await PoolApi.addMarkPool(id);
         if (rep.code !== 200) return;
-        let l = [];
-        for (let lElement of list) {
-            if (lElement.id === id)
-                lElement.isMark = true;
-            l.push(lElement);
-        }
+        let l = list.map(el => {
+            return {
+                ...el,
+                isMark: el.id === id ? true : el.isMark,
+            }
+        });
         setPool(insertMarkList(pool));
         setList(l);
     }
 
     async function delMark(id) {
         const rep = await PoolApi.deleteMarkPool(id);
-        console.log(rep)
+
         if (rep.code !== 200) return;
-        let l = [];
-        for (let lElement of list) {
-            if (lElement.id === id)
-                lElement.isMark = false;
-            l.push(lElement);
-        }
+        let l = list.map(el => {
+            return {
+                ...el,
+                isMark: el.id === id ? false : el.isMark,
+            }
+        });
         setPool(deleteMarkList(id));
+        setList(l);
+    }
+
+    async function delPool(pool) {
+        const rep = await PoolApi.deletePool(pool.id);
+
+        let l = list.map(el => {
+            return {
+                ...el,
+                isMark: el.id === pool.id ? false : el.isMark,
+            }
+        });
+        setPool(deleteMarkList(pool.id));
         setList(l);
     }
 
