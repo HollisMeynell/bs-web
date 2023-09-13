@@ -1,5 +1,7 @@
 import ErrorPage from "@/Err/error.jsx";
 import {useLoaderData, useOutlet, useParams} from "react-router";
+import {useSelector} from "react-redux";
+import {useEffect, useState} from "react";
 
 export const Router = {
     path: "mappool",
@@ -8,7 +10,6 @@ export const Router = {
     children: [
         {
             path: ":pid",
-            loader: loader,
             Component: PoolPage,
             errorElement: <ErrorPage/>,
         }
@@ -26,6 +27,12 @@ function IndexPage(){
 }
 function PoolPage() {
     const  {pid} = useParams();
-    const {data} = useLoaderData();
-    return <div>{pid}- </div>
+    const allPool = useSelector(state => state.pool.allPool)
+    const [poolInfo, setPoolInfo] = useState({});
+
+    useEffect(() => {
+        setPoolInfo(allPool[pid]);
+    }, [pid]);
+
+    return <div>{pid}- {JSON.stringify(poolInfo)}</div>
 }
