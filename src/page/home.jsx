@@ -8,7 +8,7 @@ import {Router as PoolRouter} from './home/mappool/index.jsx'
 import {Link} from "react-router-dom";
 import {Setter} from "@/components/page-setter.jsx";
 import {default as Index} from "./home/index.jsx";
-import {useLayoutEffect, useRef, useState} from "react";
+import {useEffect, useLayoutEffect, useRef, useState} from "react";
 import {
     AppstoreOutlined,
     ExportOutlined,
@@ -21,7 +21,7 @@ import {getFlagUrlFromCountryCode, getUser} from "@/api/util.js";
 import {getUserCard} from "@/api/userinfo.js";
 import {PoolApi} from "@/api/pool-api.js";
 import {useDispatch, useSelector} from "react-redux";
-import {initMarkList} from "@/components/store/pool.js";
+import {initMarkList, putPools} from "@/components/store/pool.js";
 
 export const Router = {
     path: '/home',
@@ -33,13 +33,15 @@ export const Router = {
 
 async function loader(){
     const markData = await PoolApi.getMarkPool();
+    setTimeout(() => window.putAllPool(markData.data), 5);
     return {
         marks: markData.data,
     }
 }
 
 function parseMark(list) {
-    const markList = list.map(i => generateMenuItem(<Link to={`mappool/${i.id}`} children={i.name}/>, `/home/mappool/${i.id}`));
+    console.log(list);
+    const markList = list.filter(i => i && i.id).map(i => generateMenuItem(<Link to={`mappool/${i.id}`} children={i.name}/>, `/home/mappool/${i.id}`));
     if(markList.length === 0) markList.push({label: "请在管理页面添加", disabled: true, key: "NONE"});
     return markList;
 }
@@ -47,6 +49,7 @@ function parseMark(list) {
 function Home() {
     const {token} = theme.useToken();
     const {marks} = useLoaderData();
+    const allPool = useSelector(state => state.pool.allPool)
     const markPool = useSelector(state => state.pool.markList)
     const setMarkPool = useDispatch()
     const navigate = useNavigate();
@@ -62,23 +65,27 @@ function Home() {
         };
     });
 
-
-    const routeList = [
-        generateMenuItem(<Link to={''} children={"主页"}/>, "/home", <HomeOutlined/>),
-        generateMenuItem("图池", "/home/mappool", <FolderOpenOutlined/>, parseMark(markPool)),
-        generateMenuItem(<Link to={'favorites'} children={"收藏"}/>, "/home/favorites", <AppstoreOutlined/>),
-        generateMenuItem(<Link to={'manege'} children={"管理"}/>, "/home/manege", <UngroupOutlined/>),
-    ];
+    const [routList, setRoutList] = useState([]);
 
     function updateMenu() {
         PoolApi.getMarkPool().then(rep => {
             const markList = rep.data;
-            setMarkPool(initMarkList(markList));
+            setMarkPool(initMarkList(markList.map(m => m.id)))
+            window.putAllPool(markList);
         });
     }
 
+    useEffect(() => {
+        setRoutList([
+            generateMenuItem(<Link to={''} children={"主页"}/>, "/home", <HomeOutlined/>),
+            generateMenuItem("图池", "/home/mappool", <FolderOpenOutlined/>, parseMark(markPool.map(i => allPool[i]))),
+            generateMenuItem(<Link to={'favorites'} children={"收藏"}/>, "/home/favorites", <AppstoreOutlined/>),
+            generateMenuItem(<Link to={'manege'} children={"管理"}/>, "/home/manege", <UngroupOutlined/>),
+        ]);
+    }, [markPool, allPool]);
+
     useLayoutEffect(() => {
-        setMarkPool(initMarkList(marks));
+        setMarkPool(initMarkList(marks.map(m => m.id)))
 
         getUserCard(userData.uid).then((data) => {
             setUserData({
@@ -88,7 +95,7 @@ function Home() {
                 country: data.country_code,
             })
         }).catch((e) => {
-            console.log(e);
+            console.error(e);
         });
     }, []);
 
@@ -105,7 +112,7 @@ function Home() {
         <Layout.Sider theme={'light'} trigger={null}>
             <Menu
                 mode="inline"
-                items={routeList}
+                items={routList}
                 onOpenChange={(title) => {
                     if (title.includes('/home/mappool')) {
                         updateMenu();

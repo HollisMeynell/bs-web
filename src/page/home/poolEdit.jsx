@@ -1,9 +1,9 @@
-import {useEffect, useRef, useState} from "react";
-import {Button, Card, Col, Space, Table, Tag} from "antd";
+import {useEffect, useState} from "react";
+import {Button, Card, Space, Table, Tag} from "antd";
 import '@/style/home/poolEdit.css'
 import CreatePool from "../../components/create-pool.jsx";
 import {PoolApi} from "@/api/pool-api.js";
-import {getImageUrl, getUser, HttpRequest} from "@/api/util.js";
+import {getImageUrl, getUser} from "@/api/util.js";
 import ErrorPage from "@/Err/error.jsx";
 import {useLoaderData, useNavigate} from "react-router";
 import {BarsOutlined, DeleteOutlined, MinusCircleOutlined, PlusCircleOutlined, PlusOutlined} from "@ant-design/icons";
@@ -32,7 +32,7 @@ async function loader({params}) {
         }).permission;
         pool.isMark = markData[pool.id] !== void 0;
     }
-    console.log(req.data)
+    window.putAllPool(req.data);
     return {
         listData: [...req.data]
     }
@@ -83,12 +83,12 @@ function PoolEdit() {
             title: 'ACTION',
             key: 'action',
             render: (_, value) => {
-                return <Space size={'middle'}>
+                return <Space size={'middle'} key={value.id}>
                     {
                         value.isMark ?
                             <MinusCircleOutlined onClick={() => delMark(value.id)}/>
                             :
-                            <PlusCircleOutlined onClick={() => addMark(value.id, value)}/>
+                            <PlusCircleOutlined onClick={() => addMark(value.id)}/>
                     }
                     <BarsOutlined onClick={() => navigate(`/home/mappool/${value.id}`)}/>
                     {
@@ -99,8 +99,7 @@ function PoolEdit() {
         }
     ]
 
-    async function addMark(id, pool) {
-
+    async function addMark(id) {
         const rep = await PoolApi.addMarkPool(id);
         if (rep.code !== 200) return;
         let l = list.map(el => {
@@ -109,7 +108,7 @@ function PoolEdit() {
                 isMark: el.id === id ? true : el.isMark,
             }
         });
-        setPool(insertMarkList(pool));
+        setPool(insertMarkList(id));
         setList(l);
     }
 

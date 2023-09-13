@@ -17,6 +17,7 @@ import clickBoomEffect from "@/components/other/boom.js";
 import ErrorPage from "@/Err/error.jsx";
 import OsuUserCard from "@/components/card/osu-user-card.jsx";
 import {delMessage, delMessageDone, popMessage, putMessage} from "@/components/store/show.js";
+import {putAllPools, putPools} from "@/components/store/pool.js";
 
 const test = {
     path: '/test',
@@ -55,6 +56,10 @@ function Main() {
 
         window.outMessage = value => dispatch(putMessage(value));
         window.outMessageCancel = key => dispatch(delMessage(key));
+        window.outMessageClear = message.destroy;
+
+        window.putPool = pool => dispatch(putPools(pool));
+        window.putAllPool = pools => dispatch(putAllPools(pools));
 
         return () => {
             document.removeEventListener("keydown", egg);

@@ -19,14 +19,16 @@ export const Router = {
 }
 
 function Index() {
-    const title = "No name yet.";
+    const title = "PASSACAGLIA";
     const info = "一个关于OSU的比赛管理网站";
-    const infoItem = ["创建比赛", "招募成员", "管理图池", "成绩统计", "以及其他比赛相关的事情"]
+    const infoItem = ["创建比赛", "招募成员", "管理图池", "成绩统计"]
 
     const mainBox = useRef(void 0);
     const {token} = useToken();
     useEffect(() => {
         mainBox.current.style.setProperty('--main-color', token.colorPrimaryBg);
+    }, [token.colorPrimaryBg]);
+    useEffect(() => {
         let bg;
         switch (Math.floor(Math.random() * 3)) {
             case 0: bg = imgCard1;break;
@@ -34,7 +36,7 @@ function Index() {
             case 2: bg = imgCard3;break;
         }
         mainBox.current.style.backgroundImage = `url(${bg})`;
-    }, [token.colorPrimaryBg]);
+    }, []);
     const navigate = useNavigate();
 
     const titleRef = useRef(null);
@@ -50,6 +52,7 @@ function Index() {
     const infoTypeOpt = {
         speed: 80,
         cursorChar: "",
+        loop: false,
     }
 
     function titleShow() {
