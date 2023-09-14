@@ -2,6 +2,7 @@ import {useNavigate, useRouteError} from "react-router";
 import {Button, Result} from "antd";
 import {useEffect, useRef} from "react";
 import TypeIt from "typeit";
+import {setBefErrPath, sleep} from "@/assets/utils/util.js";
 
 
 
@@ -11,6 +12,14 @@ export default function ErrorPage(){
     const infoRef = useRef(null);
     const info = error.statusText || error.message;
     const navigate = useNavigate();
+
+
+    if (error?.name === "AxiosError" && error.response.data.code === 401){
+        console.error(2)
+        setBefErrPath( window.location.pathname);
+        window.location.replace("/login");
+        return <></>;
+    }
     function toHome(){
         navigate('/');
     }
