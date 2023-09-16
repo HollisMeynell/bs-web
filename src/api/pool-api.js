@@ -6,6 +6,14 @@ async function getPublicPools() {
     return await HttpRequest.get("/api/public/getAllPool");
 }
 
+/**
+ * 增加 mark pool (右侧下拉栏)
+ * @param {number} poolId
+ * @returns {Promise<{
+ *     id:{number},
+ *
+ * }>}
+ */
 async function addMarkPool(poolId) {
     return await HttpRequest.put("/api/pool/mark", {poolId});
 }
@@ -26,46 +34,79 @@ const CREATE_POOL = {
     info: ""
 }
 
+/**
+ *
+ * @param {{
+ *     name: string,
+ *     banner: string,
+ *     info: string
+ * }} data
+ * @returns {Promise<{
+ *     id: number,
+ *     banner: string,
+ *     info: string,
+ *     status: "SHOW"|"OPEN"|"STOP"|"DELETE",
+ * }>}
+ */
 async function createPool(data = CREATE_POOL) {
     return await HttpRequest.put("/api/pool/pool", data);
 }
 
 const UPDATE_POOL = {
-    poolId:0,
+    poolId: 0,
     name: "",
     banner: "",
     info: ""
 }
-async function updatePool(data = UPDATE_POOL) {
+
+/**
+ *
+ * @param {{
+ *     poolId: number,
+ *     name: string,
+ *     banner: string,
+ *     info: string,
+ * }} data
+ * @returns {Promise<any>}
+ */
+async function updatePool(data ) {
     return await HttpRequest.patch("/api/pool/pool", data);
 }
+
 async function deletePool(poolId) {
     return await HttpRequest.delete("/api/pool/pool", {params: {poolId}})
 }
 
-async function getPoolInfo(data = {poolId: 0}) {
+/***
+ *
+ * @param {{poolId: number}} data
+ * @returns {Promise<>}
+ */
+async function getPoolInfo(data) {
     return await HttpRequest.get("/api/pool/queryPublic", {
         params: data,
     });
 }
 
-async function queryPoolInfo(data = {poolName: ""}) {
+/**
+ *
+ * @param {{poolName: string}} data
+ * @returns {Promise<>}
+ */
+async function queryPoolInfo(data) {
     return await HttpRequest.get("/api/pool/queryPublic", {
         params: data,
     });
 }
 
-const CREATE_GROUP = {
-    name: "",
-    info: "",
-    poolId: 0,
-    color: 0,
-}
-
-const ADD_USER = {
-
-}
-async function addUser(data = ADD_USER){
+/**
+ *
+ * @param {{
+ *
+ * }} data
+ * @returns {Promise<void>}
+ */
+async function addUser(data) {
     await HttpRequest.put("");
 }
 

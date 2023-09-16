@@ -15,7 +15,6 @@ const poolSlice = createSlice({
                     ...actionElement,
                 };
             }
-            console.error(data)
             state.allPool = data;
         },
         putPools: (state, action) => {

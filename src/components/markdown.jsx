@@ -8,6 +8,18 @@ import remarkMath from "remark-math";
 import remarkFrontmatter from "remark-frontmatter";
 import {getImageUrl, uploadImage} from "@/api/util.js";
 
+/**
+ *
+ * @param {boolean} edit
+ * @param {string} defaultValue
+ * @param {function} onChange
+ * @param {boolean} editStatus editable status
+ * @param {boolean} allowControl change edit?show
+ * @param {style: string} maxHeight
+ * @param {style: string} maxWidth
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function Editor({
                                    edit,
                                    defaultValue,

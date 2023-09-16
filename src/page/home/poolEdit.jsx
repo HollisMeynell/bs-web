@@ -19,7 +19,7 @@ export const Router = {
 
 async function loader({params}) {
 
-    let req = await PoolApi.queryPoolInfo();
+    let req = await PoolApi.queryPoolInfo({poolName: ''});
     const mark = await PoolApi.getMarkPool();
     const user = getUser();
     const markData = {};

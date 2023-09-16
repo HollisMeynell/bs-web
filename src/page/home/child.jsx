@@ -1,4 +1,4 @@
-import ErrorPage from "../Err/error.jsx";
+import ErrorPage from "../../Err/error.jsx";
 import {useParams} from "react-router";
 
 export const Router = {
