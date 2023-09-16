@@ -59,7 +59,17 @@ const UPDATE_POOL = {
     info: ""
 }
 
-async function updatePool(data = UPDATE_POOL) {
+/**
+ *
+ * @param {{
+ *     poolId: number,
+ *     name: string,
+ *     banner: string,
+ *     info: string,
+ * }} data
+ * @returns {Promise<any>}
+ */
+async function updatePool(data ) {
     return await HttpRequest.patch("/api/pool/pool", data);
 }
 
