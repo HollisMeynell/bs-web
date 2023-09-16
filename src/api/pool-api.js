@@ -3,7 +3,9 @@ import {HttpRequest} from "./util.js";
 
 async function getPublicPools() {
     // return {code:0, data:[{id:0, info:'', name:''}], message:''}
-    return await HttpRequest.get("/api/public/getAllPool");
+    return await HttpRequest.get("/api/public/getAllPool", {
+        params: {poolName: ''}
+    });
 }
 
 /**
