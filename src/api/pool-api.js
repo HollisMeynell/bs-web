@@ -69,7 +69,7 @@ const UPDATE_POOL = {
  * }} data
  * @returns {Promise<any>}
  */
-async function updatePool(data ) {
+async function updatePool(data) {
     return await HttpRequest.patch("/api/pool/pool", data);
 }
 

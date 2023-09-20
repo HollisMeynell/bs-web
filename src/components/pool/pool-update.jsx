@@ -1,49 +1,28 @@
-import {Modal, Col, Row, Input} from "antd";
 import {useReducer, useState} from "react";
-import ImageCropper from "./image-cropper.jsx";
-import {uploadImage} from "@/api/util.js";
-import Editor from "@/components/markdown.jsx";
-import {tipsStyle} from "@/components/js-style.js";
+import {poolDataReduce} from "@/components/pool/pool-create.jsx";
+import {getImageUrl, uploadImage} from "@/api/util.js";
 import {PoolApi} from "@/api/pool-api.js";
+import {Col, Input, Modal, Row} from "antd";
+import {tipsStyle} from "@/components/js-style.js";
+import ImageCropper from "@/components/image-cropper.jsx";
+import Editor from "@/components/markdown.jsx";
 
-export default function ({children}) {
-
+export default function ({poolId, data, children}) {
     const [insertStatus, setInsertStatus] = useState({
         name: null,
         info: null,
-        banner: false,
+        banner: null,
     });
-
-    const dataReduce = (state, action) => {
-        const newData = {
-            ...state
-        }
-        switch (action.type) {
-            case "set" : {
-                if (typeof action.value === "string") {
-                    newData[action.key] = action.value;
-                } else {
-                    newData[action.key] = action.value.target.value;
-                }
-                break;
-            }
-            case "img" : {
-                newData.banner = action.value;
-                break;
-            }
-            case "clear":{
-                return {}
-            }
-        }
-        return newData;
-    }
-    const [insertData, setInsertData] = useReducer(dataReduce, {}, v => v);
+    const [insertData, setInsertData] = useReducer(poolDataReduce, {
+        name: data.name,
+        info: data.info,
+        banner: getImageUrl(data.banner)
+    });
     const [modalOpen, setModalOpen] = useState(false);
     const [modalOkButton, setModalOkButton] = useState(false);
-
     const setData = (a) => {
         return (e) => {
-            setInsertData({type: "set", key: a, value: e});
+            setInsertData({type: 'set', key: a, value: e});
             if (insertStatus[a]) {
                 const newStatus = {
                     ...insertStatus
@@ -54,7 +33,10 @@ export default function ({children}) {
         }
     }
 
-    const getImage = (imgBlob = new Blob()) => {
+    /**
+     * @param {Blob} imgBlob
+     */
+    function getImage(imgBlob) {
         if (imgBlob) {
             setInsertStatus({
                 ...insertStatus,
@@ -65,7 +47,7 @@ export default function ({children}) {
         setInsertData({type: "img", value: imgBlob});
     }
 
-    const onSubmit = async () => {
+    function checkSubmit() {
         let allPass = true;
         const status = {};
         if (!insertData.name) {
@@ -85,16 +67,23 @@ export default function ({children}) {
             setInsertStatus(status)
             return false;
         }
-        const key = "tip";
-        let res;
+    }
+
+    async function onSubmit() {
+        if (!checkSubmit()) return false;
+
+        const key = "pool-update";
+
         outMessage({
             key,
             type: "loading",
             content: "加载中"
         })
+        let res;
         try {
             const {fileKey} = await uploadImage(insertData.banner, "banner.png");
-            res = await PoolApi.createPool({
+            res = await PoolApi.updatePool({
+                poolId,
                 name: insertData.name,
                 info: insertData.info,
                 banner: fileKey,
@@ -103,7 +92,7 @@ export default function ({children}) {
             outMessage({
                 key,
                 type: "error",
-                content: `创建失败: ${e.message}`,
+                content: `修改失败: ${e.message}`,
                 duration: 10
             });
             return false;
@@ -112,7 +101,7 @@ export default function ({children}) {
             outMessage({
                 key,
                 type: "success",
-                content: '创建完成',
+                content: '修改完成',
                 duration: 3
             });
             return true;
@@ -120,7 +109,7 @@ export default function ({children}) {
             outMessage({
                 key,
                 type: "error",
-                content: `创建失败: ${res.message}`,
+                content: `修改失败: ${res.message}`,
                 duration: 10
             });
         }
@@ -137,6 +126,7 @@ export default function ({children}) {
 
     const onOpen = () => {
         setModalOpen(true);
+        console.log(data)
     }
 
     const onClose = () => {
@@ -185,6 +175,7 @@ export default function ({children}) {
                         setUploadStatus={setUploadStatus}
                         tips={"建议尺寸 172 * 80"}
                         aspectRatio={86 / 40}
+                        imageOldUrl={data.banner}
                         setCutImage={getImage}/>
                 </Col>
             </Row>
@@ -194,9 +185,10 @@ export default function ({children}) {
             </Row>
 
             <Row align={"middle"} justify="space-evenly" style={{marginTop: "1rem"}}>
-                <Col span={24}><Editor edit onChange={setData("info")} editStatus={insertStatus.info}/></Col>
+                <Col span={24}>
+                    <Editor edit onChange={setData("info")} editStatus={insertStatus.info} defaultValue={insertData.info}/>
+                </Col>
             </Row>
-
         </Modal>
     </>
 }

@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {Button, Card, Space, Table, Tag} from "antd";
 import '@/style/home/poolEdit.css'
-import CreatePool from "../../components/create-pool.jsx";
+import PoolCreate from "../../components/pool/pool-create.jsx";
 import {PoolApi} from "@/api/pool-api.js";
 import {getImageUrl, getUser} from "@/api/util.js";
 import ErrorPage from "@/Err/error.jsx";
@@ -141,8 +141,8 @@ function PoolEdit() {
 
     return <>
         <Table columns={columns} dataSource={list} size={"small"} pagination={false}/>
-        <CreatePool>
+        <PoolCreate>
             <Button>create pool map X</Button>
-        </CreatePool>
+        </PoolCreate>
     </>
 }

@@ -11,12 +11,13 @@ export default function ({
                              setUploadStatus,
                              enablePreview = true,
                              tips,
-                             aspectRatio
+                             imageOldUrl = '',
+                             aspectRatio,
                          }) {
 
     const [image, setImage] = useState("");
 
-    const [imageUrl, setImageUrl] = useState("");
+    const [imageUrl, setImageUrl] = useState(imageOldUrl);
     const [modalOpen, setModalOpen] = useState(false);
 
     const cropRef = useRef();
@@ -71,9 +72,11 @@ export default function ({
     };
 
     return <>
-        <div style={{width:100, height:50, display:"flex",
-            justifyContent:"center", alignItems:"center",
-            overflow:"hidden"}}>
+        <div style={{
+            width: 100, height: 50, display: "flex",
+            justifyContent: "center", alignItems: "center",
+            overflow: "hidden"
+        }}>
             <div style={imageUrl ? {transform: "translate(4px, 5px)"} : null}>
                 <Upload beforeUpload={onUpload}
                         accept={"image/*"}
@@ -81,7 +84,7 @@ export default function ({
                         onRemove={onRemove}
                         listType={imageUrl ? "picture-card" : "text"}
                         fileList={imageUrl ? [{uid: "0", status: "done", url: imageUrl}] : []}>
-                    {imageUrl ? null : <Button icon={<UploadOutlined/>} danger={uploadStatus}>上传</Button>}
+                        {imageUrl ? null : <Button icon={<UploadOutlined/>} danger={uploadStatus}>上传</Button>}
                 </Upload>
             </div>
         </div>
