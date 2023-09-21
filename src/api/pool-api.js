@@ -69,7 +69,7 @@ const UPDATE_POOL = {
  * }} data
  * @returns {Promise<any>}
  */
-async function updatePool(data ) {
+async function updatePool(data) {
     return await HttpRequest.patch("/api/pool/pool", data);
 }
 
@@ -83,9 +83,36 @@ async function deletePool(poolId) {
  * @returns {Promise<>}
  */
 async function getPoolInfo(data) {
-    return await HttpRequest.get("/api/pool/queryPublic", {
-        params: data,
-    });
+    const rep = await getPoolById(data.poolId);
+
+    if (rep.code === 200 && rep.totalItems === 1) {
+        return rep.data[0];
+    }
+    if (rep.code !== 200) {
+        throw Error("pool not found:\n" + rep.message);
+    } else {
+        throw Error("pool not found");
+    }
+}
+const cache = new Map();
+async function getPoolById(poolId) {
+    if (cache.has(poolId)) {
+        return await new Promise(resolve => {
+            cache.get(poolId).push(resolve);
+        })
+    }
+
+    const callbacks = [];
+    cache.set(poolId, callbacks);
+    try {
+        const rep = await HttpRequest.get("/api/pool/queryPublic", {
+            params: {poolId},
+        });
+        callbacks.forEach(resolve => resolve(rep));
+        return rep;
+    } finally {
+        cache.delete(poolId)
+    }
 }
 
 /**

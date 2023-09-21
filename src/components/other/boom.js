@@ -28,6 +28,7 @@ export default function clickBoomEffect() {
         if (!boom) {
             boom = true;
             window.addEventListener("mousedown", function(e) {
+                if (!check(e.target)) return;
                 pushBalls(randBetween(6, 9), e.clientX, e.clientY);
                 longPress = setTimeout(function(){
                     longPressed = true;
@@ -48,6 +49,7 @@ export default function clickBoomEffect() {
 
     function alwaysBoom() {
         window.addEventListener("mousedown", function(e) {
+            if (!check(e.target)) return;
             pushBalls(randBetween(6, 9), e.clientX, e.clientY);
             longPress = setTimeout(function(){
                 longPressed = true;
@@ -144,5 +146,20 @@ export default function clickBoomEffect() {
                 balls.splice(i, 1);
             }
         }
+    }
+
+    /**
+     *
+     * @param {EventTarget|Element} el
+     */
+    function check(el) {
+        let dom = el;
+        while (dom != null) {
+            if (dom.matches('.ant-popover-inner,.ant-float-btn')) {
+                return false;
+            }
+            dom = dom.parentElement;
+        }
+        return true
     }
 }

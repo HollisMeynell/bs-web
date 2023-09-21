@@ -1,10 +1,11 @@
 import {Modal, Col, Row, Input} from "antd";
 import {useReducer, useState} from "react";
-import ImageCropper from "./image-cropper.jsx";
+import ImageCropper from "../image-cropper.jsx";
 import {uploadImage} from "@/api/util.js";
 import Editor from "@/components/markdown.jsx";
 import {tipsStyle} from "@/components/js-style.js";
 import {PoolApi} from "@/api/pool-api.js";
+import {putMessage} from "@/components/store/show.js";
 
 export default function ({children}) {
 
@@ -14,30 +15,8 @@ export default function ({children}) {
         banner: false,
     });
 
-    const dataReduce = (state, action) => {
-        const newData = {
-            ...state
-        }
-        switch (action.type) {
-            case "set" : {
-                if (typeof action.value === "string") {
-                    newData[action.key] = action.value;
-                } else {
-                    newData[action.key] = action.value.target.value;
-                }
-                break;
-            }
-            case "img" : {
-                newData.banner = action.value;
-                break;
-            }
-            case "clear":{
-                return {}
-            }
-        }
-        return newData;
-    }
-    const [insertData, setInsertData] = useReducer(dataReduce, {}, v => v);
+
+    const [insertData, setInsertData] = useReducer(poolDataReduce, {}, v => v);
     const [modalOpen, setModalOpen] = useState(false);
     const [modalOkButton, setModalOkButton] = useState(false);
 
@@ -54,7 +33,10 @@ export default function ({children}) {
         }
     }
 
-    const getImage = (imgBlob = new Blob()) => {
+    /**
+     * @param {Blob} imgBlob
+     */
+    const getImage = (imgBlob) => {
         if (imgBlob) {
             setInsertStatus({
                 ...insertStatus,
@@ -65,7 +47,7 @@ export default function ({children}) {
         setInsertData({type: "img", value: imgBlob});
     }
 
-    const onSubmit = async () => {
+    function checkSubmit() {
         let allPass = true;
         const status = {};
         if (!insertData.name) {
@@ -85,7 +67,13 @@ export default function ({children}) {
             setInsertStatus(status)
             return false;
         }
-        const key = "tip";
+        return true;
+    }
+
+    const onSubmit = async () => {
+        if (!checkSubmit()) return false;
+
+        const key = "pool-create";
         let res;
         outMessage({
             key,
@@ -136,6 +124,12 @@ export default function ({children}) {
     }
 
     const onOpen = () => {
+        const r  = putMessage({
+            key: 'pool-error',
+            type: "error",
+            content: "type error",
+            duration: 3
+        })
         setModalOpen(true);
     }
 
@@ -199,4 +193,35 @@ export default function ({children}) {
 
         </Modal>
     </>
+}
+
+export function poolDataReduce (state, action) {
+    let newData = {
+        ...state
+    }
+    switch (action.type) {
+        case "set" : {
+            if (typeof action.value === "string") {
+                newData[action.key] = action.value;
+            } else {
+                newData[action.key] = action.value.target.value;
+            }
+            break;
+        }
+        case "img" : {
+            newData.banner = action.value;
+            break;
+        }
+        case "all": {
+            newData = {
+                ...newData,
+                ...action.value,
+            }
+            break;
+        }
+        case "clear":{
+            return {}
+        }
+    }
+    return newData;
 }

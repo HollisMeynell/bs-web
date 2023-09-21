@@ -21,7 +21,7 @@ import {getFlagUrlFromCountryCode, getUser} from "@/api/util.js";
 import {getUserCard} from "@/api/userinfo.js";
 import {PoolApi} from "@/api/pool-api.js";
 import {useDispatch, useSelector} from "react-redux";
-import {initMarkList} from "@/components/store/pool.js";
+import {initMarkList, putAllPools} from "@/components/store/pool.js";
 
 export const Router = {
     path: '/home',
@@ -33,7 +33,7 @@ export const Router = {
 
 async function loader() {
     const markData = await PoolApi.getMarkPool();
-    setTimeout(() => window.putAllPool(markData.data), 5);
+    setTimeout(() => dispatch(putAllPools(markData.data)), 5);
     return {
         marks: markData.data,
     }
@@ -64,7 +64,7 @@ function Home() {
         PoolApi.getMarkPool().then(rep => {
             const markList = rep.data;
             setMarkPool(initMarkList(markList.map(m => m.id)))
-            window.putAllPool(markList);
+            dispatch(putAllPools(markList));
         });
     }
 

@@ -1,14 +1,14 @@
 import {useEffect, useState} from "react";
 import {Button, Card, Space, Table, Tag} from "antd";
 import '@/style/home/poolEdit.css'
-import CreatePool from "../../components/create-pool.jsx";
+import PoolCreate from "../../components/pool/pool-create.jsx";
 import {PoolApi} from "@/api/pool-api.js";
 import {getImageUrl, getUser} from "@/api/util.js";
 import ErrorPage from "@/Err/error.jsx";
 import {useLoaderData, useNavigate} from "react-router";
 import {BarsOutlined, DeleteOutlined, MinusCircleOutlined, PlusCircleOutlined, PlusOutlined} from "@ant-design/icons";
 import {useDispatch} from "react-redux";
-import {deleteMarkList, insertMarkList} from "@/components/store/pool.js";
+import {deleteMarkList, insertMarkList, putAllPools} from "@/components/store/pool.js";
 
 export const Router = {
     path: "manege",
@@ -32,7 +32,7 @@ async function loader({params}) {
         }).permission;
         pool.isMark = markData[pool.id] !== void 0;
     }
-    window.putAllPool(req.data);
+    dispatch(putAllPools(req.data));
     return {
         listData: [...req.data]
     }
@@ -141,8 +141,8 @@ function PoolEdit() {
 
     return <>
         <Table columns={columns} dataSource={list} size={"small"} pagination={false}/>
-        <CreatePool>
+        <PoolCreate>
             <Button>create pool map X</Button>
-        </CreatePool>
+        </PoolCreate>
     </>
 }
