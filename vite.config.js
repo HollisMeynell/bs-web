@@ -25,9 +25,7 @@ export default defineConfig({
             },
         }
     },
-    preview: {
-        port: 4173
-    },
+    base:"/bs-web/",
     build: {
         cssCodeSplit: true,
         outDir: process.env.BUILD_PATH || 'static',
