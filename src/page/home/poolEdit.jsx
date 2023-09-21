@@ -8,7 +8,7 @@ import ErrorPage from "@/Err/error.jsx";
 import {useLoaderData, useNavigate} from "react-router";
 import {BarsOutlined, DeleteOutlined, MinusCircleOutlined, PlusCircleOutlined, PlusOutlined} from "@ant-design/icons";
 import {useDispatch} from "react-redux";
-import {deleteMarkList, insertMarkList} from "@/components/store/pool.js";
+import {deleteMarkList, insertMarkList, putAllPools} from "@/components/store/pool.js";
 
 export const Router = {
     path: "manege",
@@ -32,7 +32,7 @@ async function loader({params}) {
         }).permission;
         pool.isMark = markData[pool.id] !== void 0;
     }
-    window.putAllPool(req.data);
+    dispatch(putAllPools(req.data));
     return {
         listData: [...req.data]
     }

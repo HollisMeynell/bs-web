@@ -91,6 +91,12 @@ export function getFlagUrlFromCountryCode(code) {
     return `https://osu.ppy.sh/assets/images/flags/${i1.toString(16)}-${i2.toString(16)}.svg`;
 }
 
+/**
+ *
+ * @param {Blob} file
+ * @param {string} name
+ * @returns {Promise<{fileKey: string}>}
+ */
 export async function uploadImage(file, name) {
     const res = await HttpRequest.post("/api/file/stream/" + name, file, {headers: {"Content-Type": "application/octet-stream"}});
     if (res.code === 200) {
@@ -100,6 +106,11 @@ export async function uploadImage(file, name) {
     } else throw new Error(res.message)
 }
 
+/**
+ *
+ * @param {[Blob]} files
+ * @returns {Promise<{}>}
+ */
 export async function uploadAllImage(files) {
     const res = await HttpRequest.post("/api/file/upload", files);
     if (res.code === 200) {
@@ -107,6 +118,11 @@ export async function uploadAllImage(files) {
     } else throw new Error(res.message)
 }
 
+/**
+ *
+ * @param {string} key
+ * @returns {string}
+ */
 export function getImageUrl(key) {
     return `/api/file/image/${key}`
 }

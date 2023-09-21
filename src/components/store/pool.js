@@ -17,7 +17,7 @@ const poolSlice = createSlice({
             }
             state.allPool = data;
         },
-        putPools: (state, action) => {
+        putPool: (state, action) => {
             const data = {
                 ...state.allPool
             }
@@ -42,7 +42,7 @@ const poolSlice = createSlice({
 
 export const {
     putAllPools,
-    putPools,
+    putPool,
     initMarkList,
     insertMarkList,
     deleteMarkList,
