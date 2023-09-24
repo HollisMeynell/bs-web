@@ -155,7 +155,7 @@ export default function clickBoomEffect() {
     function check(el) {
         let dom = el;
         while (dom != null) {
-            if (dom.matches('.ant-popover-inner,.ant-float-btn')) {
+            if (dom.matches('.ant-popover-inner,.ant-float-btn,button,a')) {
                 return false;
             }
             dom = dom.parentElement;

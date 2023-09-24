@@ -209,8 +209,10 @@ export default function ({children, poolId}) {
                 <Col style={tipsStyle}>info</Col>
             </Row>
             <Row align={"middle"} justify="space-evenly" style={{marginTop: "1rem"}}>
-                <Col span={24}><Editor edit onChange={(v) => setInsertData({type: "info", value: v})}
-                                       editStatus={insertStatus.info}/></Col>
+                <Col span={24}>
+                    <Editor edit onChange={(v) => setInsertData({type: "info", value: v})}
+                                       editStatus={insertStatus.info}/>
+                </Col>
             </Row>
         </Modal>
     </>

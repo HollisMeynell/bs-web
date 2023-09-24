@@ -22,6 +22,7 @@ export default function ({
     const [modalOpen, setModalOpen] = useState(false);
 
     const cropRef = useRef();
+    const box = useRef();
 
     const closeModal = () => {
         setImage("");
@@ -72,11 +73,50 @@ export default function ({
         }
     };
 
+    /**
+     * @param {KeyboardEvent} e
+     */
+    function handleKeyDown(e) {
+        if (e.key === "ArrowUp" || e.key === "w") {
+            cropRef.current?.cropper.move(0, 1);
+        }
+        if (e.key === "ArrowDown" || e.key === "s") {
+            cropRef.current?.cropper.move(0, -1);
+        }
+        if (e.key === "ArrowLeft" || e.key === "a") {
+            cropRef.current?.cropper.move(1, 0);
+        }
+        if (e.key === "ArrowRight" || e.key === "d") {
+            cropRef.current?.cropper.move(-1, 0);
+        }
+        if (e.key === "-") {
+            cropRef.current?.cropper.zoom(-0.1);
+        }
+        if (e.key === "+" || e.key === "=") {
+            cropRef.current?.cropper.zoom(0.1);
+        }
+    }
+
     useEffect(() => {
-        if (typeof imageOldUrl === 'string') {
+        if (typeof imageOldUrl === 'string' && imageOldUrl.length > 0) {
             setImageUrl(getImageUrl(imageOldUrl));
         }
     }, [imageOldUrl]);
+
+    useEffect(() => {
+
+        const interval = setInterval(addEvent, 100);
+        function addEvent () {
+            if (box.current) {
+                box.current.addEventListener('keypress', handleKeyDown);
+                clearInterval(interval)
+            }
+        }
+        return () => {
+            box.current.removeEventListener('keypress', handleKeyDown);
+        }
+    }, []);
+
     return <>
         <div style={{
             width: 100, height: 50, display: "flex",
@@ -90,17 +130,17 @@ export default function ({
                         onRemove={onRemove}
                         listType={imageUrl ? "picture-card" : "text"}
                         fileList={imageUrl ? [{uid: "0", status: "done", url: imageUrl}] : []}>
-                        {imageUrl ? null : <Button icon={<UploadOutlined/>} danger={uploadStatus}>上传</Button>}
+                    {imageUrl ? null : <Button icon={<UploadOutlined/>} danger={uploadStatus}>上传</Button>}
                 </Upload>
             </div>
         </div>
         <Modal open={modalOpen} onOk={getCropData} onCancel={closeModal} width={550}>
-            <div style={{width: 500}}>
+            <div style={{width: 500}} ref={box}>
                 <Divider orientation={"left"}>{tips}</Divider>
                 <div style={{width: "80%", margin: "0 auto", display: "flex", justifyContent: "center"}}>
                     <Cropper
                         ref={cropRef}
-                        style={{height: "100%"}}
+                        style={{height: "100%", maxHeight: '16rem'}}
                         zoomTo={0}
                         aspectRatio={aspectRatio}
                         dragMode="move"

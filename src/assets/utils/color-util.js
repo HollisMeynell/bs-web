@@ -27,8 +27,9 @@ export function i32Color2Hex(i) {
         throw new Error("input type error");
     }
     if ((i & 0xFF000000) === 0xFF) {
-        return `#${(i & 0xFFFFFF).toString(16)}`;
+
+        return `#${((i >> 16) & 0xFF).toString(16)}${((i >> 8) & 0xFF).toString(16)}${(i & 0xFF).toString(16)}`;
     } else {
-        return `#${(i & 0xFFFFFFFF).toString(16)}`;
+        return `#${((i >> 24) & 0xFF).toString(16)}${((i >> 16) & 0xFF).toString(16)}${((i >> 8) & 0xFF).toString(16)}${(i & 0xFF).toString(16)}`;
     }
 }

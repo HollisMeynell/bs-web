@@ -177,7 +177,7 @@ export default function ({children}) {
                     <ImageCropper
                         uploadStatus={insertStatus.banner}
                         setUploadStatus={setUploadStatus}
-                        tips={"建议尺寸 172 * 80"}
+                        tips={"使用宽高比 2.15"}
                         aspectRatio={86 / 40}
                         setCutImage={getImage}/>
                 </Col>

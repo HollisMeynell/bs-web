@@ -50,7 +50,6 @@ function PoolPage() {
         });
         PoolApi.getPoolInfo({poolId: pid}).then(rep => {
             outMessageCancel(messageKey);
-            console.error("123")
             dispatch(putPool(rep));
         }).catch(e => {
             outMessage({
