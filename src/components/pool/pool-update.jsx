@@ -1,6 +1,6 @@
-import {useEffect, useReducer, useRef, useState} from "react";
+import {useEffect, useReducer, useState} from "react";
 import {poolDataReduce} from "@/components/pool/pool-create.jsx";
-import {getImageUrl, uploadImage} from "@/api/util.js";
+import {uploadImage} from "@/api/util.js";
 import {PoolApi} from "@/api/pool-api.js";
 import {Col, Input, Modal, Row} from "antd";
 import {tipsStyle} from "@/components/js-style.js";
@@ -210,7 +210,7 @@ export default function ({poolId, children}) {
                     <ImageCropper
                         uploadStatus={insertStatus.banner}
                         setUploadStatus={setUploadStatus}
-                        tips={"建议尺寸 172 * 80"}
+                        tips={"使用宽高比 2.15"}
                         aspectRatio={86 / 40}
                         imageOldUrl={insertData.banner}
                         setCutImage={getImage}/>
