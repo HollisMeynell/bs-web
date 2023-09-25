@@ -1,4 +1,4 @@
-import './style.css'
+import style from './facorite-map-box.module.scss'
 import {useEffect, useLayoutEffect, useRef, useState} from "react";
 import {theme} from "antd";
 
@@ -18,9 +18,9 @@ export function FavoriteBox( {defaultValue, onChange, color} ) {
         svg.current.style.setProperty('--color', color || token.colorPrimaryActive);
     }, [token, color]);
 
-    return <div className={"favorite-box"}>
+    return <div className={style.favoriteBox}>
         <label>
-            <input type="checkbox" className="checkbox" onChange={handleChange} checked={checked}/>
+            <input type="checkbox" className={style.checkbox} onChange={handleChange} checked={checked}/>
             <svg ref={svg} id="heart-svg" viewBox="467 392 58 57" xmlns="http://www.w3.org/2000/svg">
                 <g id="Group" fill="none" fill-rule="evenodd" transform="translate(467 392)">
                     <path

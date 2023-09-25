@@ -1,10 +1,14 @@
-import {useEffect, useState} from "react";
-import {getMapInfo} from "@/api/mapinfo.js";
+import {useEffect, useRef, useState} from "react";
+import {getMapInfo} from "@/api/map-api.js";
 import {Card, Col, Row} from "antd";
-import {FavoriteBox} from "@/components/favorite/favorite.jsx";
+import {FavoriteBox} from "@/components/favorite/favorite-map-box.jsx";
 import {EditOutlined, SaveOutlined, SettingOutlined} from "@ant-design/icons";
 import {TagBox} from "@/components/tag.jsx";
 import Markdown from "@/components/markdown.jsx";
+import IconLength from '@/assets/icon-length.svg';
+import IconBpm from '@/assets/icon-bpm.svg';
+import IconCountCircles from '@/assets/icon-count-circles.svg';
+import IconCountSliders from '@/assets/icon-count-sliders.svg';
 
 /***
  *
@@ -130,7 +134,7 @@ function BannerLite({data, onClick}) {
         <div className={"banner-lite-bid"}><h2>b/{data.bid}</h2></div>
     </div>
 }
-function MapCard({bid}) {
+export function MapInfoCard({bid}) {
     const [loading, setLoading] = useState(false);
     const [isFavorite, setIsFavorite] = useState(false);
     const [bannerDate, setBannerDate] = useState({
@@ -195,7 +199,7 @@ function MapCard({bid}) {
         </Row>
         <Row gutter={rowGutter}>
             <Col flex={'auto'}>
-                <Markdown edit={editMarkdown}/>
+                <Markdown edit={editMarkdown} allowControl={false}/>
             </Col>
         </Row>
 

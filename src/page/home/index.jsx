@@ -2,7 +2,7 @@ import {useOutlet, useNavigate, useParams, useLocation, useLoaderData} from "rea
 import ErrorPage from "@/Err/error.jsx";
 import {Avatar, Breadcrumb, Card, Divider, Layout, Menu, Popover, theme} from "antd";
 import {Router as childRouter} from '@/page/home/child.jsx'
-import {Router as Favorites} from '@/page/home/favorites.jsx'
+import {Router as Favorites} from '@/page/favorite/index.jsx'
 import {Router as PoolEdit} from '@/page/home/poolEdit.jsx'
 import {Router as PoolRouter} from '@/page/home/mappool/index.jsx'
 import Main from '@/page/home/main.jsx'

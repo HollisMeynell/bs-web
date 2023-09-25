@@ -6,12 +6,13 @@ import {useRef} from "react";
 import {dom2image} from "@/assets/utils/dom-to-image.js";
 import {downloadFile, saveFile, writeImageToClipboard} from "@/assets/utils/file-util.js";
 import {useDispatch} from "react-redux";
+import {MapInfoCard} from "@/components/card/map-info-card.jsx";
 
 export const Router = {
-    path: 'favorites', element: <Favorites/>, errorElement: <ErrorPage/>
+    path: 'favorites', element: <Index/>, errorElement: <ErrorPage/>
 }
 
-function Favorites(){
+function Index(){
     const filterR = useRef(null);
     const dispatch = useDispatch();
 
@@ -52,7 +53,8 @@ function Favorites(){
                 <Button onClick={copy}>{"<-"}复制到剪切板</Button>
                 <Button onClick={download}>下载文件</Button>
                 <Button onClick={downloadOld}>下载文件-兼容方案</Button>
-                {/*<MapCard bid={1972258} r={"a"}/>*/}
+
+                <MapInfoCard bid={1972258} />
                 {/*<MapCard bid={1972258} r={"ab"}/>*/}
                 {/*<MapCard bid={1972258} r={"abc"}/>*/}
                 {/*<MapCard bid={1972258} r={"abcd"}/>*/}
