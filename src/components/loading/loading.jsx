@@ -7,7 +7,7 @@ export default function ({index = 0, color}) {
     const [loading, setLoading] = useState(null);
     useLayoutEffect(() => {
         if (index) {
-            index = Math.round(index) % 5;
+            index = 1 + (Math.round(index) % 3);
         } else {
             index = Math.floor(Math.random() * 3) + 1
         }
@@ -16,6 +16,6 @@ export default function ({index = 0, color}) {
             case 2: setLoading(<Loading2 color={color}/>);break
             case 3: setLoading(<Loading3 color={color}/>);break
         }
-    }, [])
+    }, [color])
     return loading
 }

@@ -21,7 +21,9 @@ export const Router = {
 async function loader({params}) {
     const pid = params.pid;
     let groups;
+    parseInt(pid);
     const rep = await CategoryGroupApi.getPoolAllGroups(pid);
+    groups = rep;
     return {groups}
 }
 

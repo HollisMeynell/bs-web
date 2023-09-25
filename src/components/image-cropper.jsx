@@ -103,20 +103,6 @@ export default function ({
         }
     }, [imageOldUrl]);
 
-    useEffect(() => {
-
-        const interval = setInterval(addEvent, 100);
-        function addEvent () {
-            if (box.current) {
-                box.current.addEventListener('keypress', handleKeyDown);
-                clearInterval(interval)
-            }
-        }
-        return () => {
-            box.current.removeEventListener('keypress', handleKeyDown);
-        }
-    }, []);
-
     return <>
         <div style={{
             width: 100, height: 50, display: "flex",
@@ -135,7 +121,7 @@ export default function ({
             </div>
         </div>
         <Modal open={modalOpen} onOk={getCropData} onCancel={closeModal} width={550}>
-            <div style={{width: 500}} ref={box}>
+            <div style={{width: 500}}>
                 <Divider orientation={"left"}>{tips}</Divider>
                 <div style={{width: "80%", margin: "0 auto", display: "flex", justifyContent: "center"}}>
                     <Cropper

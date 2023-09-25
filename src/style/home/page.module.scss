@@ -1,8 +1,9 @@
 
 .box {
+  position: relative;
   display: flex;
   height: 100%;
-  background-color: #0a3069;
+  background-color: var(--color-main-fill);
 
   flex-direction: column;
   flex-wrap: nowrap;
@@ -10,8 +11,18 @@
   justify-content: center;
   align-items: center;
 
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    height: 6px;
+    width: 100%;
+    background-color: var(--color-main);
+    -webkit-mask-image: linear-gradient(60deg, var(--color-main), rgba(0,0,0,0) 60%);
+  }
+
   .header-line{
-    -webkit-mask-image: linear-gradient(60deg, rgba(0,0,0,1), rgba(0,0,0,0) 60%);
+
   }
 
 

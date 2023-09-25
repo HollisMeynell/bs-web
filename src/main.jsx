@@ -17,13 +17,14 @@ import clickBoomEffect from "@/components/other/boom.js";
 import ErrorPage from "@/Err/error.jsx";
 import OsuUserCard from "@/components/card/osu-user-card.jsx";
 import {delMessage, delMessageDone, popMessage, putMessage} from "@/components/store/show.js";
-import {putAllPools, putPool} from "@/components/store/pool.js";
+import TestCard from "@/components/card/test-card.jsx";
 
 const test = {
     path: '/test',
     element: <>
         <OsuUserCard uid={8664140}/>
         <OsuUserCard uid={17064371}/>
+        <TestCard/>
     </>,
     errorElement: <ErrorPage/>,
 }
@@ -97,8 +98,26 @@ function Main() {
     }, [messageDelKey]);
 
     return <ConfigProvider theme={themeConf}>
-        <RouterProvider router={router}/>
+        <GlobTheme/>
     </ConfigProvider>
+}
+
+function GlobTheme() {
+    const {token} = theme.useToken();
+
+    useEffect(() => {
+        const root = document.querySelector(':root');
+        console.log(token)
+        root.style.setProperty('--color-main', token.colorPrimary);
+        root.style.setProperty('--color-main-link', token.colorLink);
+        root.style.setProperty('--color-main-fill', token.colorFill);
+        root.style.setProperty('--color-main-background', token.colorPrimaryBg);
+        root.style.setProperty('--color-main-background-hover', token.colorPrimaryBgHover);
+        root.style.setProperty('--color-main-border', token.colorPrimaryBorder);
+        root.style.setProperty('--color-main-border-hover', token.colorPrimaryBorderHover);
+    }, [token]);
+
+    return <RouterProvider router={router}/>
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(

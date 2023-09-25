@@ -6,12 +6,15 @@ async function getPublicPools() {
     return await HttpRequest.get("/api/public/getAllPool");
 }
 
+async function getMyPool() {
+    return await HttpRequest.get('/api/pub/getMyPool');
+}
+
 /**
  * 增加 mark pool (右侧下拉栏)
  * @param {number} poolId
  * @returns {Promise<{
  *     id:{number},
- *
  * }>}
  */
 async function addMarkPool(poolId) {

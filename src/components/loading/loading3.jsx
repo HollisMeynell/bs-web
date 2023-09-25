@@ -1,13 +1,11 @@
 import style from './loading3.module.scss'
 import {useLayoutEffect, useRef} from "react";
-import {theme} from "antd";
 
 export default function ({color}){
-    const {token} = theme.useToken();
     const spinner = useRef(null);
     useLayoutEffect(() => {
-        spinner.current.style.setProperty('--color', color || token.colorPrimaryActive);
-    }, [token, color]);
+        if (color) spinner.current.style.setProperty('--color-main', color);
+    }, [color]);
 
     return <div className={style.skCircle} ref={spinner}>
         <div className={style.skChild}></div>

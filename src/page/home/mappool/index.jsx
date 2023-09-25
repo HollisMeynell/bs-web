@@ -17,5 +17,5 @@ async function loader() {
 function IndexPage() {
     const {pid} = useParams();
     const outlet = useOutlet();
-    return <div>{outlet || `>_<`}</div>
+    return <>{outlet || <div>{'>_<'}</div>}</>
 }
