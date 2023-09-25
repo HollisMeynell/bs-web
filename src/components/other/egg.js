@@ -21,8 +21,7 @@ const p = [
 
 let nowIndex = 0;
 export function egg(keyboardEvent) {
-    const event = keyboardEvent;
-    if (event.key === p[nowIndex]) {
+    if (keyboardEvent.key === p[nowIndex]) {
         nowIndex ++;
         if (nowIndex >= p.length) {
             nowIndex = 0;
@@ -33,5 +32,11 @@ export function egg(keyboardEvent) {
     }
 }
 function doEgg () {
-    alert("偶吼吼~ 居然触发了彩蛋")
+    if (typeof window.egg === 'function') {
+        window.egg();
+    }
+
+    const audio = document.createElement('audio');
+    audio.src = "/api/file/static/boom.wav";
+    audio.play();
 }

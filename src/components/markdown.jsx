@@ -47,7 +47,6 @@ export default function Editor({
     }
 
     function handleShow() {
-        console.log();
         setEditText((e) => !e);
     }
 
@@ -103,6 +102,10 @@ export default function Editor({
             box.current.classList.remove(style.markdownDark);
         }
     }, [isDark]);
+
+    useEffect(() => {
+        setMdStr(defaultValue);
+    }, [defaultValue]);
 
     const boxStyle = {};
     if (maxWidth) {

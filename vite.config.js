@@ -25,9 +25,6 @@ export default defineConfig({
             },
         }
     },
-    preview: {
-        port: 4173
-    },
     build: {
         cssCodeSplit: true,
         outDir: process.env.BUILD_PATH || 'static',
