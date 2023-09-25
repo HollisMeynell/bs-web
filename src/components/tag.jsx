@@ -19,19 +19,8 @@ export function TagBox({tagList, onChange, onAddTag, onDeleteTag, onSetTag}) {
     const [inputStatus, setInputStatus] = useState('');
     const [changeTag, setChangeTag] = useState('');
     const inputRef = useRef(null);
-    const editInputRef = useRef(null);
     const colorActive = {color: token.colorPrimaryTextActive};
     const messageKey = 'tagBox';
-
-    useEffect(() => {
-        if (inputVisible) {
-            inputRef.current?.focus();
-        }
-    }, [inputVisible]);
-
-    useEffect(() => {
-        editInputRef.current?.focus();
-    }, [inputValue]);
 
     useEffect(() => {
         if (typeof onChange === 'function') {
@@ -42,6 +31,10 @@ export function TagBox({tagList, onChange, onAddTag, onDeleteTag, onSetTag}) {
     useEffect(() => {
         setTags(tagList);
     }, [tagList]);
+
+    useEffect(() => {
+        inputRef?.current?.focus();
+    }, [changeTag, inputVisible]);
 
     const handleClose = (removedTag) => {
         const newTags = tags.filter((tag) => tag !== removedTag);
@@ -54,11 +47,19 @@ export function TagBox({tagList, onChange, onAddTag, onDeleteTag, onSetTag}) {
         setInputValue(e.target.value);
     };
 
+    const handleTagSet = (tag) => {
+        return function (e) {
+            const newTags = tags.map(t => t === tag ? e.target.value : tag);
+            setChangeTag('');
+        }
+    }
+
     /**
      * @param {string} tag
      */
     const handleSet = (tag) => {
         return () => {
+            setInputValue(tag);
             setChangeTag(tag);
         }
     }
@@ -74,32 +75,55 @@ export function TagBox({tagList, onChange, onAddTag, onDeleteTag, onSetTag}) {
             });
             return
         }
-        if (inputValue) {
-            if (tags.indexOf(inputValue) === -1) {
-                setTags([...tags, inputValue]);
-            } else {
-                outMessage({
-                    key: messageKey,
-                    type: 'error',
-                    content: "此tag已存在",
-                    duration: 4,
-                });
-            }
+
+        if (tags.indexOf(inputValue) !== -1) {
+            outMessage({
+                key: messageKey,
+                type: 'error',
+                content: "此tag已存在",
+                duration: 4,
+            });
+            setInputStatus('error');
+            return;
         }
+        if (changeTag) {
+            const newTags = tags.map(t => t === changeTag ? inputValue : t);
+            setTags(newTags);
+            setChangeTag('');
+            setInputVisible(false);
+            setInputValue('');
+            return;
+        }
+        setTags([...tags, inputValue]);
         setInputStatus('');
         setInputVisible(false);
         setInputValue('');
     };
     const tagInputStyle = {
-        width: 78, verticalAlign: 'top',
+        width: 64, verticalAlign: 'top', marginInlineEnd: 8
     };
     const tagPlusStyle = {
         background: token.colorBgContainer, borderStyle: 'dashed',
     };
+
     return <Space size={[10, 8]} wrap align={"start"} style={{marginTop: 10, marginBottom: 10}}>
         <Space size={[0, 8]} wrap align={"start"}>
             {tags.map((tag) => {
                 if (!tag) return null;
+                if (changeTag && changeTag === tag) {
+                    return <Input
+                        key={tag}
+                        ref={inputRef}
+                        type="text"
+                        size="small"
+                        style={tagInputStyle}
+                        value={inputValue}
+                        onChange={handleInputChange}
+                        onBlur={handleInputConfirm}
+                        onPressEnter={handleInputConfirm}
+                        status={inputStatus}
+                    />
+                }
                 return (<Tag
                     key={tag}
                     bordered={false}
