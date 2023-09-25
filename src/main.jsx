@@ -107,7 +107,6 @@ function GlobTheme() {
 
     useEffect(() => {
         const root = document.querySelector(':root');
-        console.log(token)
         root.style.setProperty('--color-main', token.colorPrimary);
         root.style.setProperty('--color-main-link', token.colorLink);
         root.style.setProperty('--color-main-fill', token.colorFill);

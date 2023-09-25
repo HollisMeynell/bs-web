@@ -8,14 +8,14 @@ export default function clickBoomEffect() {
     let longPress;
     let multiplier = 5;
     let width, height;
+    let enable = true;
     let ctx;
     const colours = ["#F73859", "#14FFEC", "#00E0FF", "#FF99FE", "#FAF15D"];
     const canvas = document.createElement("canvas");
     init();
     function init() {
         document.body.appendChild(canvas);
-        canvas.setAttribute("style", "width: 100%; height: 100%; top: 0; left: 0; z-index: 99999; position: fixed; pointer-events: none;");
-
+        canvas.setAttribute("style", "top: 0; left: 0; z-index: 99999; position: fixed; pointer-events: none;");
     }
 
     if (canvas.getContext && window.addEventListener) {
@@ -28,18 +28,18 @@ export default function clickBoomEffect() {
         if (!boom) {
             boom = true;
             window.addEventListener("mousedown", function(e) {
-                if (!check(e.target)) return;
-                pushBalls(randBetween(6, 9), e.clientX, e.clientY);
                 longPress = setTimeout(function(){
                     longPressed = true;
                 }, 500);
-                boom = false;
             }, {once:true});
             window.addEventListener("mouseup", function(e) {
                 clearInterval(longPress);
+                if (!check(e.target)) return;
                 if (longPressed === true) {
                     pushBalls(randBetween(6, 9 + Math.ceil(multiplier)), e.clientX, e.clientY);
                     longPressed = false;
+                } else {
+                    pushBalls(randBetween(6, 9), e.clientX, e.clientY);
                 }
                 boom = false;
             }, {once:true});
@@ -48,20 +48,25 @@ export default function clickBoomEffect() {
     }
 
     function alwaysBoom() {
-        window.addEventListener("mousedown", function(e) {
-            if (!check(e.target)) return;
+        window.addEventListener("mousedown", handleDown , false);
+        window.addEventListener("mouseup", handleUp, false);
+    }
+
+    function handleDown(e) {
+        longPress = setTimeout(function(){
+            longPressed = true;
+        }, 500);
+    }
+
+    function handleUp(e) {
+        clearInterval(longPress);
+        if (!check(e.target)) return;
+        if (longPressed === true) {
+            pushBalls(randBetween(6, 9 + Math.ceil(multiplier)), e.clientX, e.clientY);
+            longPressed = false;
+        } else {
             pushBalls(randBetween(6, 9), e.clientX, e.clientY);
-            longPress = setTimeout(function(){
-                longPressed = true;
-            }, 500);
-        }, false);
-        window.addEventListener("mouseup", function(e) {
-            clearInterval(longPress);
-            if (longPressed === true) {
-                pushBalls(randBetween(6, 9 + Math.ceil(multiplier)), e.clientX, e.clientY);
-                longPressed = false;
-            }
-        }, false);
+        }
     }
 
     function addEventListener() {
@@ -72,13 +77,17 @@ export default function clickBoomEffect() {
         requestAnimationFrame(loop);
     }
 
-
+    function removeEventListener (){
+        window.removeEventListener('resize', updateSize);
+        window.removeEventListener("mousedown", handleDown , false);
+        window.removeEventListener("mouseup", handleUp, false);
+        enable = false;
+    }
 
     function updateSize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        canvas.style.width = window.innerWidth + 'px';
-        canvas.style.height = window.innerHeight + 'px';
+        const zoom = parseInt(document.documentElement.style.zoom) / 100;
+        canvas.width = window.innerWidth /  zoom;
+        canvas.height = window.innerHeight / zoom;
     }
     class Ball {
         constructor(x, y) {
@@ -136,7 +145,9 @@ export default function clickBoomEffect() {
         }
         removeBall();
         lastTimestamp = timestamp;
-        requestAnimationFrame(loop);
+        if (enable) {
+            requestAnimationFrame(loop);
+        }
     }
 
     function removeBall() {
@@ -162,4 +173,6 @@ export default function clickBoomEffect() {
         }
         return true
     }
+
+    return removeEventListener;
 }
