@@ -2,6 +2,22 @@ import {Input, Space, Tag, theme} from "antd";
 import {useEffect, useRef, useState} from "react";
 import {CloseOutlined, PlusOutlined} from "@ant-design/icons";
 
+const messageKey = 'tagBox';
+
+const TagAlreadyExists = {
+    key: messageKey,
+    type: 'error',
+    content: "此tag已存在",
+    duration: 3,
+};
+
+const TagTooLong = {
+    key: messageKey,
+    type: 'error',
+    content: "单个TAG不得超过7个字符",
+    duration: 3,
+}
+
 /**
  * @param {[string]} tagList
  * @param { function([string]) } onChange
@@ -29,76 +45,46 @@ export function TagBox({tagList, onChange, onAddTag, onDeleteTag, onSetTag}) {
     }, [tags]);
 
     useEffect(() => {
+        if (tags.length === tagList.length) {
+            let f = true;
+            for (const tag of tags) {
+                if (tagList.indexOf(tag) === -1) {
+                    f = false;
+                    break;
+                }
+            }
+            if (f) {
+                return;
+            }
+        }
         setTags(tagList);
     }, [tagList]);
 
-    useEffect(() => {
-        inputRef?.current?.focus();
-    }, [changeTag, inputVisible]);
-
-    const handleClose = (removedTag) => {
+    const handleDelete = (removedTag) => {
         const newTags = tags.filter((tag) => tag !== removedTag);
         setTags(newTags);
     };
-    const showInput = () => {
-        setInputVisible(true);
-    };
-    const handleInputChange = (e) => {
-        setInputValue(e.target.value);
-    };
 
-    const handleTagSet = (tag) => {
-        return function (e) {
-            const newTags = tags.map(t => t === tag ? e.target.value : tag);
-            setChangeTag('');
-        }
-    }
-
-    /**
+    /** 1
      * @param {string} tag
      */
     const handleSet = (tag) => {
-        return () => {
-            setInputValue(tag);
-            setChangeTag(tag);
+        return (newTag) => {
+            // 传递为空说明未修改
+            if (!newTag) return;
+            const newTags = tags.map(t => t === tag ? newTag : t);
+            setTags(newTags);
+            setChangeTag('');
         }
     }
 
-    const handleInputConfirm = () => {
-        if (inputValue && inputValue.length > 12) {
-            setInputStatus('error');
-            outMessage({
-                key: messageKey,
-                type: 'error',
-                content: "单个TAG不得超过12个字符",
-                duration: 4,
-            });
-            return
-        }
+    function handleCreate(tag) {
+        setTags((o) => [...o, tag]);
+    }
 
-        if (tags.indexOf(inputValue) !== -1) {
-            outMessage({
-                key: messageKey,
-                type: 'error',
-                content: "此tag已存在",
-                duration: 4,
-            });
-            setInputStatus('error');
-            return;
-        }
-        if (changeTag) {
-            const newTags = tags.map(t => t === changeTag ? inputValue : t);
-            setTags(newTags);
-            setChangeTag('');
-            setInputVisible(false);
-            setInputValue('');
-            return;
-        }
-        setTags([...tags, inputValue]);
-        setInputStatus('');
-        setInputVisible(false);
-        setInputValue('');
-    };
+    function handleCheck(newTag) {
+        return tags.indexOf(newTag) !== -1;
+    }
     const tagInputStyle = {
         width: 64, verticalAlign: 'top', marginInlineEnd: 8
     };
@@ -107,51 +93,177 @@ export function TagBox({tagList, onChange, onAddTag, onDeleteTag, onSetTag}) {
     };
 
     return <Space size={[10, 8]} wrap align={"start"} style={{marginTop: 10, marginBottom: 10}}>
-        <Space size={[0, 8]} wrap align={"start"}>
-            {tags.map((tag) => {
-                if (!tag) return null;
-                if (changeTag && changeTag === tag) {
-                    return <Input
-                        key={tag}
-                        ref={inputRef}
-                        type="text"
-                        size="small"
-                        style={tagInputStyle}
-                        value={inputValue}
-                        onChange={handleInputChange}
-                        onBlur={handleInputConfirm}
-                        onPressEnter={handleInputConfirm}
-                        status={inputStatus}
-                    />
-                }
-                return (<Tag
-                    key={tag}
-                    bordered={false}
-                    color={token.colorPrimaryBg}
-                    style={{userSelect: 'none',}}
-                    onDoubleClick={handleSet(tag)}
-                    children={<><span style={colorActive} children={tag}/>
-                        <CloseOutlined style={colorActive} onClick={() => handleClose(tag)}/></>}
-                />);
-            })}
-        </Space>
-        {changeTag ?
-            null :
-            inputVisible ?
-                <Input
-                    ref={inputRef}
-                    type="text"
-                    size="small"
-                    style={tagInputStyle}
-                    value={inputValue}
-                    onChange={handleInputChange}
-                    onBlur={handleInputConfirm}
-                    onPressEnter={handleInputConfirm}
-                    status={inputStatus}
-                /> :
-                <Tag style={tagPlusStyle} onClick={showInput}>
-                    <PlusOutlined/> 创建标签
-                </Tag>
-        }
+        {tags.map((tag) => {
+            if (!tag) return null;
+            return <EditableTag
+                key={tag}
+                tag={tag}
+                onDelete={handleDelete}
+                onChange={handleSet(tag)}
+                onChanging={() => setChangeTag(tag)}
+                exitChanging={() => setChangeTag('')}
+                changeable={changeTag === '' || changeTag === tag}
+                checkRepeat={handleCheck}
+            />
+        })}
+        <CreateTag checkRepeat={handleCheck} onCreate={handleCreate}/>
     </Space>;
+}
+
+/**
+ * @param {string} tag
+ * @param {function(string)} onChange
+ * @param {function(string)} onChanging
+ * @param {function()} exitChanging
+ * @param {function(string)} onDelete
+ * @param {function(string)} checkRepeat
+ * @param {boolean} changeable
+ * @return {JSX.Element}
+ */
+function EditableTag({tag, onChange, onChanging, exitChanging, onDelete, checkRepeat, changeable}) {
+    const [change, setChange] = useState(false);
+    const [inputStatus, setInputStatus] = useState('');
+    const [tagStr, setTagStr] = useState(tag);
+    const inputRef = useRef(null);
+    const {token} = theme.useToken();
+    const colorActive = {color: token.colorPrimaryTextActive};
+
+    useEffect(() => {
+        setTagStr(tag);
+    }, [tag]);
+
+    useEffect(() => {
+        if (change) {
+            inputRef?.current?.focus();
+        } else {
+            exitChanging();
+        }
+    }, [change]);
+
+    function handleDelete() {
+        onDelete(tagStr);
+    }
+
+    function handleChange() {
+        if (changeable) {
+            onChanging(tag);
+            setChange(true);
+        }
+    }
+
+    function handleValueChange(e) {
+        setTagStr(e.target.value)
+    }
+
+    function handleInputConfirm() {
+        const newTag = tagStr.trim();
+        if (newTag && newTag.length > 7) {
+            setInputStatus('error');
+            outMessage(TagTooLong);
+            return;
+        }
+
+        if (newTag === tag) {
+            setInputStatus('');
+            setChange(false);
+            return;
+        }
+
+        if (checkRepeat(newTag)) {
+            outMessage(TagAlreadyExists);
+            setInputStatus('error');
+            return;
+        }
+
+        setInputStatus('');
+        setChange(false);
+        onChange(newTag);
+    }
+
+    return change ? <Input
+            ref={inputRef}
+            type="text"
+            size="small"
+            style={{width: 64, verticalAlign: 'top'}}
+            value={tagStr}
+            onChange={handleValueChange}
+            onBlur={handleInputConfirm}
+            onPressEnter={handleInputConfirm}
+            status={inputStatus}
+        /> :
+        <Tag
+            bordered={false}
+            color={token.colorPrimaryBg}
+            style={{userSelect: 'none',}}
+            onDoubleClick={handleChange}
+            children={<>
+                <span style={colorActive} children={tagStr}/>
+                <CloseOutlined style={colorActive} onClick={handleDelete}/>
+            </>}
+        />
+
+}
+
+/**
+ * @param {function(string)} onCreate
+ * @param {function(string)} checkRepeat
+ */
+function CreateTag({onCreate, checkRepeat}) {
+    const {token} = theme.useToken();
+    const [tagStr, setTagStr] = useState(null);
+    const [creating, setCreating] = useState(false);
+    const [inputStatus, setInputStatus] = useState('');
+    const inputRef = useRef(null);
+
+    const tagPlusStyle = {
+        background: token.colorBgContainer, borderStyle: 'dashed',
+    };
+
+    function handleCreat() {
+        setCreating(true);
+    }
+
+    function handleInputChange(e) {
+        setTagStr(e.target.value);
+    }
+
+    function handleInputConfirm() {
+        const newTag = tagStr.trim();
+        if (newTag && newTag.length > 7) {
+            setInputStatus('error');
+            outMessage(TagTooLong);
+            return;
+        }
+
+        if (checkRepeat(newTag)) {
+            outMessage(TagAlreadyExists);
+            setInputStatus('error');
+            return;
+        }
+
+        onCreate(newTag);
+        setInputStatus('');
+        setTagStr('');
+        setCreating(false);
+    }
+
+    useEffect(() => {
+        if (creating) {
+            inputRef?.current?.focus();
+        }
+    }, [creating]);
+    return creating ? <Input
+            ref={inputRef}
+            type="text"
+            size="small"
+            style={{ width: 64, verticalAlign: 'top'}}
+            value={tagStr}
+            onChange={handleInputChange}
+            onBlur={handleInputConfirm}
+            onPressEnter={handleInputConfirm}
+            status={inputStatus}
+        /> :
+        <Tag style={tagPlusStyle} onClick={handleCreat}>
+            <PlusOutlined/> 创建标签
+        </Tag>
 }
