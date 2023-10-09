@@ -1,4 +1,4 @@
-import {useReducer, useState} from "react";
+import {useEffect, useReducer, useRef, useState} from "react";
 import {poolDataReduce} from "@/components/pool/pool-create.jsx";
 import {getImageUrl, uploadImage} from "@/api/util.js";
 import {PoolApi} from "@/api/pool-api.js";
@@ -6,20 +6,28 @@ import {Col, Input, Modal, Row} from "antd";
 import {tipsStyle} from "@/components/js-style.js";
 import ImageCropper from "@/components/image-cropper.jsx";
 import Editor from "@/components/markdown.jsx";
+import {useSelector} from "react-redux";
+import {putPool} from "@/components/store/pool.js";
 
-export default function ({poolId, data, children}) {
+export default function ({poolId, children}) {
     const [insertStatus, setInsertStatus] = useState({
         name: null,
         info: null,
         banner: null,
     });
     const [insertData, setInsertData] = useReducer(poolDataReduce, {
-        name: data.name,
-        info: data.info,
-        banner: getImageUrl(data.banner)
+        name: '',
+        info: '',
+        banner: ''
     });
+    const allPools = useSelector(state => state.pool.allPool);
+
     const [modalOpen, setModalOpen] = useState(false);
     const [modalOkButton, setModalOkButton] = useState(false);
+
+    useEffect(() => {
+        loadData();
+    }, [poolId]);
     const setData = (a) => {
         return (e) => {
             setInsertData({type: 'set', key: a, value: e});
@@ -65,15 +73,13 @@ export default function ({poolId, data, children}) {
 
         if (!allPass) {
             setInsertStatus(status)
-            return false;
         }
+        return allPass;
     }
 
     async function onSubmit() {
         if (!checkSubmit()) return false;
-
         const key = "pool-update";
-
         outMessage({
             key,
             type: "loading",
@@ -81,7 +87,12 @@ export default function ({poolId, data, children}) {
         })
         let res;
         try {
-            const {fileKey} = await uploadImage(insertData.banner, "banner.png");
+            let fileKey;
+            if (typeof insertData.banner !== 'string') {
+                fileKey = (await uploadImage(insertData.banner, "banner.png")).fileKey;
+            } else {
+                fileKey = insertData.banner;
+            }
             res = await PoolApi.updatePool({
                 poolId,
                 name: insertData.name,
@@ -98,6 +109,7 @@ export default function ({poolId, data, children}) {
             return false;
         }
         if (res.code === 200) {
+            dispatch(putPool(res.data));
             outMessage({
                 key,
                 type: "success",
@@ -117,6 +129,31 @@ export default function ({poolId, data, children}) {
         return false;
     }
 
+    function loadData() {
+        const thisPool = allPools[poolId];
+        if (thisPool) {
+            setInsertData({
+                type: 'all', value: thisPool
+            });
+        } else {
+            PoolApi.getPoolInfo({poolId})
+                .then(poolInfo => {
+                    dispatch(putPool(poolInfo));
+                    setInsertData({
+                        type: 'all', value: poolInfo
+                    });
+                })
+                .catch(e => {
+                    outMessage({
+                        key: 'get-pool-err',
+                        type: "error",
+                        content: `加载错误: ${e.message}`,
+                        duration: 6
+                    })
+                });
+        }
+    }
+
     const setUploadStatus = (f) => {
         setInsertStatus({
             ...insertStatus,
@@ -126,7 +163,7 @@ export default function ({poolId, data, children}) {
 
     const onOpen = () => {
         setModalOpen(true);
-        console.log(data)
+        loadData()
     }
 
     const onClose = () => {
@@ -138,7 +175,7 @@ export default function ({poolId, data, children}) {
         const submitOK = await onSubmit();
         setModalOkButton(false)
         if (submitOK) {
-            setInsertData({type:"clear"});
+            setInsertData({type: "clear"});
             setModalOpen(false);
         }
     }
@@ -175,7 +212,7 @@ export default function ({poolId, data, children}) {
                         setUploadStatus={setUploadStatus}
                         tips={"建议尺寸 172 * 80"}
                         aspectRatio={86 / 40}
-                        imageOldUrl={data.banner}
+                        imageOldUrl={insertData.banner}
                         setCutImage={getImage}/>
                 </Col>
             </Row>
@@ -186,7 +223,8 @@ export default function ({poolId, data, children}) {
 
             <Row align={"middle"} justify="space-evenly" style={{marginTop: "1rem"}}>
                 <Col span={24}>
-                    <Editor edit onChange={setData("info")} editStatus={insertStatus.info} defaultValue={insertData.info}/>
+                    <Editor edit onChange={setData("info")} editStatus={insertStatus.info}
+                            defaultValue={insertData.info}/>
                 </Col>
             </Row>
         </Modal>

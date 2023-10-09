@@ -5,6 +5,7 @@ import {uploadImage} from "@/api/util.js";
 import Editor from "@/components/markdown.jsx";
 import {tipsStyle} from "@/components/js-style.js";
 import {PoolApi} from "@/api/pool-api.js";
+import {putMessage} from "@/components/store/show.js";
 
 export default function ({children}) {
 
@@ -123,6 +124,12 @@ export default function ({children}) {
     }
 
     const onOpen = () => {
+        const r  = putMessage({
+            key: 'pool-error',
+            type: "error",
+            content: "type error",
+            duration: 3
+        })
         setModalOpen(true);
     }
 
@@ -189,7 +196,7 @@ export default function ({children}) {
 }
 
 export function poolDataReduce (state, action) {
-    const newData = {
+    let newData = {
         ...state
     }
     switch (action.type) {
@@ -203,6 +210,13 @@ export function poolDataReduce (state, action) {
         }
         case "img" : {
             newData.banner = action.value;
+            break;
+        }
+        case "all": {
+            newData = {
+                ...newData,
+                ...action.value,
+            }
             break;
         }
         case "clear":{

@@ -1,8 +1,9 @@
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {Button, Divider, Modal, Upload} from "antd";
 import Cropper from "react-cropper";
 import {UploadOutlined} from "@ant-design/icons";
 import "cropperjs/dist/cropper.css";
+import {getImageUrl} from "@/api/util.js";
 
 
 export default function ({
@@ -17,7 +18,7 @@ export default function ({
 
     const [image, setImage] = useState("");
 
-    const [imageUrl, setImageUrl] = useState(imageOldUrl);
+    const [imageUrl, setImageUrl] = useState('');
     const [modalOpen, setModalOpen] = useState(false);
 
     const cropRef = useRef();
@@ -71,6 +72,11 @@ export default function ({
         }
     };
 
+    useEffect(() => {
+        if (typeof imageOldUrl === 'string') {
+            setImageUrl(getImageUrl(imageOldUrl));
+        }
+    }, [imageOldUrl]);
     return <>
         <div style={{
             width: 100, height: 50, display: "flex",
