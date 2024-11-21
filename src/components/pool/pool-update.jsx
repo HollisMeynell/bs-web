@@ -3,7 +3,7 @@ import {poolDataReduce} from "@/components/pool/pool-create.jsx";
 import {uploadImage} from "@/api/util.js";
 import {PoolApi} from "@/api/pool-api.js";
 import {Col, Input, Modal, Row} from "antd";
-import {tipsStyle} from "@/components/js-style.js";
+import {tipsStyle} from "@/styles";
 import ImageCropper from "@/components/image-cropper.jsx";
 import Editor from "@/components/markdown.jsx";
 import {useSelector} from "react-redux";

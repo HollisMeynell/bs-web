@@ -1,14 +1,6 @@
-import ErrorPage from "../Err/error.jsx";
 import {useLoaderData} from "react-router";
 import axios from "axios";
 import {HttpRequest} from "../api/util.js";
-
-export const Router = {
-    path: '/userInfo/:uid',
-    element: <UserInfo/>,
-    loader: loader,
-    errorElement: <ErrorPage/>,
-}
 
 async function loader({params}) {
 
@@ -26,7 +18,7 @@ async function loader({params}) {
     }
 }
 
-function UserInfo() {
+export default function UserInfo() {
     const {list} = useLoaderData();
     const mods = {};
     for (const i of list) {

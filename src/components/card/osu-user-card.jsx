@@ -1,7 +1,7 @@
 import style from '@/style/card/osu-user-card.module.scss'
 import {useEffect, useReducer, useRef, useState} from "react";
 import {getUserCard} from "@/api/userinfo.js";
-import {timeBetween} from "@/assets/utils/util.js";
+import {timeBetween} from "@/utils/util.js";
 import Loading from "@/components/loading/loading.jsx";
 
 const USER_INFO_TMP = {

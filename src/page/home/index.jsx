@@ -1,13 +1,8 @@
 import {useOutlet, useNavigate, useParams, useLocation, useLoaderData} from "react-router";
-import ErrorPage from "@/Err/error.jsx";
 import {Avatar, Breadcrumb, Card, Divider, Layout, Menu, Popover, theme} from "antd";
-import {Router as childRouter} from '@/page/home/child.jsx'
-import {Router as Favorites} from '@/page/home/favorites.jsx'
-import {Router as PoolEdit} from '@/page/home/poolEdit.jsx'
-import {Router as PoolRouter} from '@/page/home/mappool/index.jsx'
 import Main from '@/page/home/main.jsx'
 import {Link} from "react-router-dom";
-import {Setter} from "@/components/page-setter.jsx";
+import Setter from "@/components/page-setter";
 import {useEffect, useLayoutEffect, useState} from "react";
 import {
     AppstoreOutlined,
@@ -23,14 +18,6 @@ import {PoolApi} from "@/api/pool-api.js";
 import {useDispatch, useSelector} from "react-redux";
 import {initMarkList, putAllPools} from "@/components/store/pool.js";
 
-export const Router = {
-    path: '/home',
-    Component: Home,
-    loader: loader,
-    errorElement: <ErrorPage/>,
-    children: [childRouter, Favorites, PoolEdit, PoolRouter,]
-}
-
 async function loader() {
     const markData = await PoolApi.getMarkPool();
     setTimeout(() => dispatch(putAllPools(markData.data)), 5);
@@ -39,7 +26,7 @@ async function loader() {
     }
 }
 
-function Home() {
+export default function Home() {
     const {token} = theme.useToken();
     const {marks} = useLoaderData();
     const allPool = useSelector(state => state.pool.allPool)

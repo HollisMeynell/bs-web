@@ -1,16 +1,9 @@
-import ErrorPage from "../Err/error.jsx";
+import ErrorPage from "../components/error";
 import {useEffect} from "react";
 import Loading from "@/components/loading/loading.jsx";
-import {doOauth} from "@/assets/utils/login.js";
+import {doOauth} from "@/utils/login.js";
 
-
-export const Router = {
-    path: '/oauth',
-    element: <Oauth/>,
-    errorElement: <ErrorPage/>,
-}
-
-function Oauth() {
+export default function Oauth() {
     useEffect(() => {
         doOauth().then();
     }, []);

@@ -4,16 +4,16 @@ import '@/style/home/poolEdit.css'
 import PoolCreate from "../../components/pool/pool-create.jsx";
 import {PoolApi} from "@/api/pool-api.js";
 import {getImageUrl, getUser} from "@/api/util.js";
-import ErrorPage from "@/Err/error.jsx";
+import ErrorPage from "@/components/error";
 import {useLoaderData, useNavigate} from "react-router";
 import {BarsOutlined, DeleteOutlined, MinusCircleOutlined, PlusCircleOutlined, PlusOutlined} from "@ant-design/icons";
 import {useDispatch} from "react-redux";
 import {deleteMarkList, insertMarkList, putAllPools} from "@/components/store/pool.js";
 
 export const Router = {
-    path: "manege",
+    path: "manage",
     loader: loader,
-    element: <PoolEdit/>,
+    element: PoolEdit,
     errorElement: <ErrorPage/>
 }
 
@@ -53,7 +53,7 @@ function getStatusTag(s) {
     }
 }
 
-function PoolEdit() {
+export default function PoolEdit() {
     const {listData} = useLoaderData();
     const [list, setList] = useState(listData);
     const navigate = useNavigate();

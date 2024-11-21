@@ -1,4 +1,4 @@
-import {dataURLtoBlob} from "@/assets/utils/file-util.js";
+import {dataURLtoBlob} from "@/utils/file-util.js";
 
 const util = newUtil();
 const inliner = newInliner()

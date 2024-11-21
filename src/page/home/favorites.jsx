@@ -1,17 +1,12 @@
-import ErrorPage from "../../Err/error.jsx";
 import {Button, Space} from "antd";
 import '@/style/home/favorites.css';
 import FilterCard from "@/components/card/filter-card.jsx";
 import {useRef} from "react";
-import {dom2image} from "@/assets/utils/dom-to-image.js";
-import {downloadFile, saveFile, writeImageToClipboard} from "@/assets/utils/file-util.js";
+import {dom2image} from "@/utils/dom-to-image.js";
+import {downloadFile, saveFile, writeImageToClipboard} from "@/utils/file-util.js";
 import {useDispatch} from "react-redux";
 
-export const Router = {
-    path: 'favorites', element: <Favorites/>, errorElement: <ErrorPage/>
-}
-
-function Favorites(){
+export default function Favorites(){
     const filterR = useRef(null);
     const dispatch = useDispatch();
 

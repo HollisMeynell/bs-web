@@ -1,17 +1,11 @@
-import ErrorPage from "@/Err/error.jsx";
+import ErrorPage from "@/components/error";
 import {useEffect, useRef, useState} from "react";
-import {doOauth} from "@/assets/utils/login.js";
+import {doOauth} from "@/utils/login.js";
 import TypeIt from "typeit";
 import {Button} from "antd";
-import {hiddenStyle, showHiddenStyle} from "@/components/js-style.js";
+import {hiddenStyle, showHiddenStyle} from "@/styles";
 
-export const Router = {
-    path: '/login',
-    Component: Login,
-    errorElement: <ErrorPage/>
-}
-
-function Login() {
+export default function Login() {
     async function doLogin(){
         await doOauth();
     }
