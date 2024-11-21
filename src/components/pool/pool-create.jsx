@@ -3,7 +3,7 @@ import {useReducer, useState} from "react";
 import ImageCropper from "../image-cropper.jsx";
 import {uploadImage} from "@/api/util.js";
 import Editor from "@/components/markdown.jsx";
-import {tipsStyle} from "@/components/js-style.js";
+import {tipsStyle} from "@/styles/index";
 import {PoolApi} from "@/api/pool-api.js";
 import {putMessage} from "@/components/store/show.js";
 

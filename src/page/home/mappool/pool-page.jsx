@@ -2,7 +2,6 @@ import {useLoaderData, useParams} from "react-router";
 import {useSelector} from "react-redux";
 import {useEffect, useState} from "react";
 import style from '@/style/home/page.module.scss'
-import ErrorPage from "@/Err/error.jsx";
 import CreateCategoryGroup from "@/components/pool/create-category-group.jsx";
 import {Button} from "antd";
 import {CategoryGroupApi} from "@/api/pool-group-api.js";
@@ -15,7 +14,6 @@ export const Router = {
     path: ":pid",
     loader: loader,
     Component: PoolPage,
-    errorElement: <ErrorPage/>,
 }
 
 async function loader({params}) {
@@ -25,7 +23,7 @@ async function loader({params}) {
     return {groups}
 }
 
-function PoolPage() {
+export default function PoolPage() {
     const {pid} = useParams();
     const {groups} = useLoaderData();
     const allPool = useSelector(state => state.pool.allPool)

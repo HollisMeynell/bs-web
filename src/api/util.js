@@ -1,5 +1,5 @@
 import axios from "axios";
-import {setBefErrPath, sleep} from "@/assets/utils/util.js";
+import {setBefErrPath, sleep} from "@/utils/util.js";
 
 const TimeoutMax = 30000
 const TimeoutStep = 2000

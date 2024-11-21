@@ -1,18 +1,12 @@
-import ErrorPage from "../Err/error.jsx";
+import ErrorPage from "../components/error";
 import {App, Card, message, Modal, theme} from "antd";
 import Loading from "../components/loading/loading.jsx";
 import {useEffect, useState} from "react";
 import {doLogin} from "../api/userinfo.js";
 import {useNavigate} from "react-router";
-import {getBefErrPath} from "@/assets/utils/util.js";
+import {getBefErrPath} from "@/utils/util.js";
 
-export const Router = {
-    path: '/bind',
-    Component: BindPage,
-    errorElement: <ErrorPage/>,
-}
-
-function BindPage() {
+export default function BindPage() {
     const [loading, setLoading] = useState(false);
     const {message} = App.useApp();
 
