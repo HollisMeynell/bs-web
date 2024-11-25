@@ -1,9 +1,9 @@
-// /routes/index.ts
 import {
   createBrowserRouter,
   RouteObject,
   useLocation,
   Navigate,
+  LoaderFunction,
 } from "react-router-dom";
 import { JSXElementConstructor } from "react";
 import { useSelector } from "react-redux";
@@ -37,15 +37,17 @@ interface RouteConfig {
   component: JSXElementConstructor<any>;
   requireAuth?: boolean;
   errorElement?: JSX.Element;
-  loader?: () => Promise<any>;
-  children?: Array<{ path: string; component: JSXElementConstructor<any> }>;
+  loader?: LoaderFunction;
+  children?: Array<{
+    path: string;
+    component: JSXElementConstructor<any>;
+    loader?: LoaderFunction;
+  }>;
 }
 
 // AuthGuard 组件
 const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
-  const authState = useSelector(
-    (state: RootState) => state.auth
-  );
+  const authState = useSelector((state: RootState) => state.auth);
   const location = useLocation();
 
   const isAuthenticated = authState?.isAuthenticated ?? false;
@@ -102,6 +104,7 @@ export const routes: Record<string, RouteConfig> = {
   "/userInfo/:uid": {
     component: UserInfo,
     requireAuth: false,
+    // loader: userInfoLoader,
   },
   "/login": {
     component: Login,
@@ -113,7 +116,7 @@ export const routes: Record<string, RouteConfig> = {
   },
 };
 
-// 转换为嵌套的路由结构
+// 嵌套的路由结构
 const transformToNestedRoutes = () => {
   return Object.entries(routes).map(([path, config]) => {
     const routeObject: ExtendedRouteObject = {
@@ -129,6 +132,7 @@ const transformToNestedRoutes = () => {
       routeObject.children = config.children.map((child) => ({
         path: child.path,
         element: <child.component />,
+        loader: child.loader,
         requireAuth: config.requireAuth, // 继承父路由的权限设置
       }));
     }
